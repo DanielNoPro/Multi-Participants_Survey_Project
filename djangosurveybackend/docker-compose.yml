@@ -1,0 +1,38 @@
+version: '3.8'
+services:
+  web:
+    container_name: web
+    restart: always
+    build: .
+    command: python manage.py runserver 0.0.0.0:9000
+    depends_on:
+      - db
+    ports:
+      - "9001:9000"
+    env_file:
+      - ./.env.dev
+  cache:
+    image: redis:6.2-alpine
+    restart: always
+    ports:
+      - '16379:6379'
+    command: redis-server --save 20 1 --loglevel warning --requirepass eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
+  db:
+    image: postgres:14.1-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=survey
+    ports:
+      - '54321:5432'
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - "5051:80"
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@gmail.com
+      - PGADMIN_DEFAULT_PASSWORD=postgres

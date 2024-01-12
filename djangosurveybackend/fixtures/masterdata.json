@@ -1,0 +1,18 @@
+[
+  {
+    "model": "surveys.questiontype",
+    "pk": 1,
+    "fields": {
+      "name": "comment",
+      "is_active": true
+    }
+  },
+  {
+    "model": "surveys.questiontype",
+    "pk": 2,
+    "fields": {
+      "name": "multiple-choice",
+      "is_active": true
+    }
+  }
+]
