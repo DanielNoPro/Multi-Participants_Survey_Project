@@ -1,3 +1,4 @@
+import { apiUser } from '@/constants/api';
 import { surveyService } from '@/services/surveyService';
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
@@ -49,6 +50,27 @@ export const fetchGetSurveyQuestions = createAsyncThunk(
     }
 );
 
+export const fetchGetUserSurveyQuestions = createAsyncThunk(
+    'survey/getUserSurveyQuestions',
+    async (data) => {
+        return apiUser.post('/api/v1/token/redirect', data)
+            .then((response) => {
+                return response.data
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }
+)
+
+export const fetchGetSurveyStatistics = createAsyncThunk(
+    'survey/getSurveyStatistics',
+    async (id) => {
+        const res = await surveyService.getSurveyStatistics(id);
+        return res;
+    }
+);
+
 const surveySlice = createSlice({
     name: 'survey',
     initialState: {
@@ -57,6 +79,8 @@ const surveySlice = createSlice({
         modalSurvey: false,
         surveyDetail: {},
         surveyQuestions: [],
+        userSurvey: {},
+        statistics: []
     },
     reducers: {
         setModalSurvey(state, { payload }) {
@@ -97,6 +121,30 @@ const surveySlice = createSlice({
             .addCase(
                 fetchGetSurveyQuestions.fulfilled, (state, action) => {
                     state.surveyQuestions = action.payload
+                    state.loadingSurvey = false
+                }
+            );
+        builder
+            .addCase(
+                fetchGetUserSurveyQuestions.pending, (state, action) => {
+                    state.userSurvey = true
+                }
+            )
+            .addCase(
+                fetchGetUserSurveyQuestions.fulfilled, (state, action) => {
+                    state.userSurvey = action.payload
+                    state.loadingSurvey = false
+                }
+            );
+        builder
+            .addCase(
+                fetchGetSurveyStatistics.pending, (state, action) => {
+                    state.loadingSurvey = true
+                }
+            )
+            .addCase(
+                fetchGetSurveyStatistics.fulfilled, (state, action) => {
+                    state.statistics = action.payload.data
                     state.loadingSurvey = false
                 }
             );

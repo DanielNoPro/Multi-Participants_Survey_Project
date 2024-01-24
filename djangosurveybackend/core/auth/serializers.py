@@ -8,8 +8,13 @@ class CoreTokenObtainPairSerializer(TokenObtainPairSerializer):
 
         # Add custom claims
         token['username'] = user.get_username()
-        token["email"] = str(user.email)
-        token["first_name"] = str(user.first_name)
-        token["last_name"] = str(user.last_name)
+        if hasattr(token, 'email'):
+            token["email"] = str(user.email)
+        if hasattr(token, 'phone_number'):
+            token["phone_number"] = str(user.phone_number)
+        if hasattr(token, 'first_name'):
+            token["first_name"] = str(user.first_name)
+        if hasattr(token, 'last_name'):
+            token["last_name"] = str(user.last_name)
 
         return token

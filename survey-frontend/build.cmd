@@ -1,0 +1,1 @@
+docker build -t survey-frontend:0.0.1 .

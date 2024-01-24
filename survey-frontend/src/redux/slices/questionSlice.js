@@ -3,8 +3,8 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
 export const fetchGetQuestions = createAsyncThunk(
     'question/getQuestions',
-    async (page) => {
-        const res = await questionService.getQuestions(page);
+    async (params) => {
+        const res = await questionService.getQuestions(params.page, params.size);
         return res;
     }
 );

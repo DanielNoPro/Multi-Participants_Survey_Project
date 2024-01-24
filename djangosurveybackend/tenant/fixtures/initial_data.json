@@ -1,0 +1,100 @@
+[
+  {
+    "model": "tenant.Service",
+    "pk": 1,
+    "fields": {
+      "name": "Survey",
+      "is_active": true
+    }
+  },
+  {
+    "model": "tenant.Tenant",
+    "pk": 1,
+    "fields": {
+      "name": "RefTeam",
+      "subdomain_prefix": "ref",
+      "is_active": true
+    }
+  },
+  {
+    "model": "tenant.Unit",
+    "pk": 1,
+    "fields": {
+      "name": "R&D",
+      "tenant": 1,
+      "is_active": true
+    }
+  },
+  {
+    "model": "tenant.Configuration",
+    "pk": 1,
+    "fields": {
+      "name": "Database host",
+      "value": "localhost",
+      "tenant": 1,
+      "service": 1,
+      "unit": 1,
+      "is_active": true
+    }
+  },
+  {
+    "model": "tenant.Configuration",
+    "pk": 2,
+    "fields": {
+      "name": "Database port",
+      "value": "54321",
+      "tenant": 1,
+      "service": 1,
+      "unit": 1,
+      "is_active": true
+    }
+  },
+  {
+    "model": "tenant.Configuration",
+    "pk": 3,
+    "fields": {
+      "name": "Database user",
+      "value": "postgres",
+      "tenant": 1,
+      "service": 1,
+      "unit": 1,
+      "is_active": true
+    }
+  },
+  {
+    "model": "tenant.Configuration",
+    "pk": 4,
+    "fields": {
+      "name": "Database pass",
+      "value": "postgres",
+      "tenant": 1,
+      "service": 1,
+      "unit": 1,
+      "is_active": true
+    }
+  },
+  {
+    "model": "tenant.Configuration",
+    "pk": 5,
+    "fields": {
+      "name": "Database name",
+      "value": "survey",
+      "tenant": 1,
+      "service": 1,
+      "unit": 1,
+      "is_active": true
+    }
+  },
+  {
+    "model": "tenant.Configuration",
+    "pk": 5,
+    "fields": {
+      "name": "Redirect Link Patterns",
+      "value": "http://localhost:3000/surveys/{}/",
+      "tenant": 1,
+      "service": 1,
+      "unit": 1,
+      "is_active": true
+    }
+  }
+]

@@ -2,7 +2,7 @@
 import React, { useEffect } from 'react';
 import Layout, { Content, Header } from 'antd/es/layout/layout';
 import Sider from 'antd/es/layout/Sider';
-import { Button, Menu } from 'antd';
+import { Affix, Button, Menu } from 'antd';
 import {
     UserOutlined,
     QuestionCircleOutlined,

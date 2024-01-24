@@ -26,7 +26,7 @@ export const surveyService = {
     },
 
     getSurveyQuestions(id, page) {
-        return api.get(`api/v1/surveys/${id}/questions/?page=${page}&page_size=10`)
+        return api.get(`api/v1/surveys/${id}/questions/?page=${page}&page_size=6`)
     },
 
     removeSurveyQuestion(survey_id, question_id) {
@@ -35,6 +35,14 @@ export const surveyService = {
 
     addQuestionToSurvey(survey_id, data) {
         return api.post(`/api/v1/surveys/${survey_id}/questions/`, data)
+    },
+
+    sendSurvey(data) {
+        return api.post(`/api/v1/survey/email`, data)
+    },
+
+    getSurveyStatistics(id){
+        return api.get(`api/v1/surveys/${id}/statistics`)
     }
 
 }

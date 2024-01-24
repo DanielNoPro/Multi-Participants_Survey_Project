@@ -1,16 +1,16 @@
 version: '3.8'
 services:
-  web:
-    container_name: web
-    restart: always
-    build: .
-    command: python manage.py runserver 0.0.0.0:9000
-    depends_on:
-      - db
-    ports:
-      - "9001:9000"
-    env_file:
-      - ./.env.dev
+  #  web:
+  #    container_name: web
+  #    restart: always
+  #    build: .
+  #    command: python manage.py runserver 0.0.0.0:9000
+  #    depends_on:
+  #      - db
+  #    ports:
+  #      - "9001:9000"
+  #    env_file:
+  #      - ./.env.dev
   cache:
     image: redis:6.2-alpine
     restart: always

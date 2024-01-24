@@ -3,10 +3,12 @@ import React, { useState, useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import {
     DeleteOutlined,
+    ArrowLeftOutlined
 } from '@ant-design/icons';
 import { fetchGetSurveyDetail, fetchGetSurveyQuestions } from '@/redux/slices/surveySlice';
 import { surveyService } from '@/services/surveyService';
 import { fetchGetQuestions } from '@/redux/slices/questionSlice';
+import { useRouter } from 'next/navigation';
 
 const TabSurveyQuestion = ({ slug }) => {
     const dispatch = useDispatch()
@@ -14,7 +16,7 @@ const TabSurveyQuestion = ({ slug }) => {
     const { questions, loadingQuestion } = useSelector((state) => state.question)
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [messageApi, contextHolder] = message.useMessage();
-
+    const router = useRouter()
 
     const success = () => {
         messageApi.open({
@@ -87,6 +89,8 @@ const TabSurveyQuestion = ({ slug }) => {
                 return <p>Multiple Choice</p>
             case 3:
                 return <p>Likert</p>
+            case 4:
+                return <p>Dropdown</p>
             default:
                 break;
         }
@@ -101,7 +105,7 @@ const TabSurveyQuestion = ({ slug }) => {
     }
 
     const openAddQuestionModal = () => {
-        dispatch(fetchGetQuestions(1))
+        dispatch(fetchGetQuestions({ page: 1, size: 7 }))
         setIsModalOpen(true)
     }
 
@@ -130,6 +134,7 @@ const TabSurveyQuestion = ({ slug }) => {
     return (
         <div>
             {contextHolder}
+            <Button shape="circle" icon={<ArrowLeftOutlined />} onClick={() => router.push(`/dashboard/survey`)} />
             <Button type="primary" onClick={openAddQuestionModal} className="mb-10">Add Questions</Button>
             <Table
                 size='middle'
@@ -138,8 +143,8 @@ const TabSurveyQuestion = ({ slug }) => {
                 dataSource={surveyQuestions.data}
                 rowKey={(record) => record.id}
                 pagination={{
-                    pageSize: 10,
-                    total: surveyQuestions.total,
+                    pageSize: 6,
+                    // total: surveyQuestions.total,
                     onChange: (page) => {
                         handleGetSurveyQuestions(page)
                     },
@@ -162,10 +167,10 @@ const TabSurveyQuestion = ({ slug }) => {
                     dataSource={questions.data}
                     rowKey={(record) => record.id}
                     pagination={{
-                        pageSize: 10,
-                        total: questions.total,
+                        pageSize: 6,
+                        // total: questions.total,
                         onChange: (page) => {
-                            dispatch(fetchGetQuestions(page))
+                            dispatch(fetchGetQuestions({ page: page, size: 6 }))
                         },
                     }}
                 />

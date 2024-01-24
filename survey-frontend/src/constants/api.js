@@ -6,6 +6,9 @@ export const api = axios.create({
     baseURL: process.env.NEXT_PUBLIC_API_HOST,
 })
 
+export const apiUser = axios.create({
+    baseURL: process.env.NEXT_PUBLIC_API_HOST
+});
 
 api.interceptors.response.use((res) => {
     return res.data

@@ -1,0 +1,34 @@
+[
+  {
+    "model": "surveys.QuestionType",
+    "pk": 1,
+    "fields": {
+      "name": "Comment",
+      "is_active": true
+    }
+  },
+  {
+    "model": "surveys.QuestionType",
+    "pk": 2,
+    "fields": {
+      "name": "Multiple Choice",
+      "is_active": true
+    }
+  },
+  {
+    "model": "surveys.QuestionType",
+    "pk": 3,
+    "fields": {
+      "name": "Likert",
+      "is_active": true
+    }
+  },
+  {
+    "model": "surveys.QuestionType",
+    "pk": 4,
+    "fields": {
+      "name": "Dropdown",
+      "is_active": true
+    }
+  }
+]

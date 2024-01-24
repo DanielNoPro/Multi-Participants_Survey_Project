@@ -8,22 +8,22 @@ paths:
     get:
       operationId: api_v1_question_types_list
       parameters:
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
+        - name: page
+          required: false
+          in: query
+          description: A page number within the paginated result set.
+          schema:
+            type: integer
+        - name: page_size
+          required: false
+          in: query
+          description: Number of results to return per page.
+          schema:
+            type: integer
       tags:
-      - api
+        - api
       security:
-      - jwtAuth: []
+        - jwtAuth: [ ]
       responses:
         '200':
           content:
@@ -34,7 +34,7 @@ paths:
     post:
       operationId: api_v1_question_types_create
       tags:
-      - api
+        - api
       requestBody:
         content:
           application/json:
@@ -48,7 +48,7 @@ paths:
               $ref: '#/components/schemas/QuestionType'
         required: true
       security:
-      - jwtAuth: []
+        - jwtAuth: [ ]
       responses:
         '201':
           content:
@@ -60,16 +60,16 @@ paths:
     get:
       operationId: api_v1_question_types_retrieve
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this question type.
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this question type.
+          required: true
       tags:
-      - api
+        - api
       security:
-      - jwtAuth: []
+        - jwtAuth: [ ]
       responses:
         '200':
           content:
@@ -80,14 +80,14 @@ paths:
     put:
       operationId: api_v1_question_types_update
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this question type.
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this question type.
+          required: true
       tags:
-      - api
+        - api
       requestBody:
         content:
           application/json:
@@ -101,7 +101,7 @@ paths:
               $ref: '#/components/schemas/QuestionType'
         required: true
       security:
-      - jwtAuth: []
+        - jwtAuth: [ ]
       responses:
         '200':
           content:
@@ -112,14 +112,14 @@ paths:
     patch:
       operationId: api_v1_question_types_partial_update
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this question type.
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this question type.
+          required: true
       tags:
-      - api
+        - api
       requestBody:
         content:
           application/json:
@@ -132,7 +132,7 @@ paths:
             schema:
               $ref: '#/components/schemas/PatchedQuestionType'
       security:
-      - jwtAuth: []
+        - jwtAuth: [ ]
       responses:
         '200':
           content:
@@ -143,16 +143,16 @@ paths:
     delete:
       operationId: api_v1_question_types_destroy
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this question type.
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this question type.
+          required: true
       tags:
-      - api
+        - api
       security:
-      - jwtAuth: []
+        - jwtAuth: [ ]
       responses:
         '204':
           description: No response body
@@ -160,22 +160,22 @@ paths:
     get:
       operationId: api_v1_questions_list
       parameters:
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
+        - name: page
+          required: false
+          in: query
+          description: A page number within the paginated result set.
+          schema:
+            type: integer
+        - name: page_size
+          required: false
+          in: query
+          description: Number of results to return per page.
+          schema:
+            type: integer
       tags:
-      - api
+        - api
       security:
-      - jwtAuth: []
+        - jwtAuth: [ ]
       responses:
         '200':
           content:
@@ -186,7 +186,7 @@ paths:
     post:
       operationId: api_v1_questions_create
       tags:
-      - api
+        - api
       requestBody:
         content:
           application/json:
@@ -200,7 +200,7 @@ paths:
               $ref: '#/components/schemas/Question'
         required: true
       security:
-      - jwtAuth: []
+        - jwtAuth: [ ]
       responses:
         '201':
           content:
@@ -212,16 +212,16 @@ paths:
     get:
       operationId: api_v1_questions_retrieve
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this question.
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this question.
+          required: true
       tags:
-      - api
+        - api
       security:
-      - jwtAuth: []
+        - jwtAuth: [ ]
       responses:
         '200':
           content:
@@ -232,14 +232,14 @@ paths:
     put:
       operationId: api_v1_questions_update
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this question.
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this question.
+          required: true
       tags:
-      - api
+        - api
       requestBody:
         content:
           application/json:
@@ -253,7 +253,7 @@ paths:
               $ref: '#/components/schemas/Question'
         required: true
       security:
-      - jwtAuth: []
+        - jwtAuth: [ ]
       responses:
         '200':
           content:
@@ -264,14 +264,14 @@ paths:
     patch:
       operationId: api_v1_questions_partial_update
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this question.
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this question.
+          required: true
       tags:
-      - api
+        - api
       requestBody:
         content:
           application/json:
@@ -284,7 +284,7 @@ paths:
             schema:
               $ref: '#/components/schemas/PatchedQuestion'
       security:
-      - jwtAuth: []
+        - jwtAuth: [ ]
       responses:
         '200':
           content:
@@ -295,16 +295,16 @@ paths:
     delete:
       operationId: api_v1_questions_destroy
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this question.
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this question.
+          required: true
       tags:
-      - api
+        - api
       security:
-      - jwtAuth: []
+        - jwtAuth: [ ]
       responses:
         '204':
           description: No response body
@@ -312,27 +312,27 @@ paths:
     get:
       operationId: api_v1_questions_options_list
       parameters:
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - in: path
-        name: question_id
-        schema:
-          type: integer
-        required: true
+        - name: page
+          required: false
+          in: query
+          description: A page number within the paginated result set.
+          schema:
+            type: integer
+        - name: page_size
+          required: false
+          in: query
+          description: Number of results to return per page.
+          schema:
+            type: integer
+        - in: path
+          name: question_id
+          schema:
+            type: integer
+          required: true
       tags:
-      - api
+        - api
       security:
-      - jwtAuth: []
+        - jwtAuth: [ ]
       responses:
         '200':
           content:
@@ -343,13 +343,13 @@ paths:
     post:
       operationId: api_v1_questions_options_create
       parameters:
-      - in: path
-        name: question_id
-        schema:
-          type: integer
-        required: true
+        - in: path
+          name: question_id
+          schema:
+            type: integer
+          required: true
       tags:
-      - api
+        - api
       requestBody:
         content:
           application/json:
@@ -363,7 +363,7 @@ paths:
               $ref: '#/components/schemas/QuestionOption'
         required: true
       security:
-      - jwtAuth: []
+        - jwtAuth: [ ]
       responses:
         '201':
           content:
@@ -375,21 +375,21 @@ paths:
     get:
       operationId: api_v1_questions_options_retrieve
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this question option.
-        required: true
-      - in: path
-        name: question_id
-        schema:
-          type: integer
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this question option.
+          required: true
+        - in: path
+          name: question_id
+          schema:
+            type: integer
+          required: true
       tags:
-      - api
+        - api
       security:
-      - jwtAuth: []
+        - jwtAuth: [ ]
       responses:
         '200':
           content:
@@ -400,19 +400,19 @@ paths:
     put:
       operationId: api_v1_questions_options_update
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this question option.
-        required: true
-      - in: path
-        name: question_id
-        schema:
-          type: integer
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this question option.
+          required: true
+        - in: path
+          name: question_id
+          schema:
+            type: integer
+          required: true
       tags:
-      - api
+        - api
       requestBody:
         content:
           application/json:
@@ -426,7 +426,7 @@ paths:
               $ref: '#/components/schemas/QuestionOption'
         required: true
       security:
-      - jwtAuth: []
+        - jwtAuth: [ ]
       responses:
         '200':
           content:
@@ -437,19 +437,19 @@ paths:
     patch:
       operationId: api_v1_questions_options_partial_update
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this question option.
-        required: true
-      - in: path
-        name: question_id
-        schema:
-          type: integer
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this question option.
+          required: true
+        - in: path
+          name: question_id
+          schema:
+            type: integer
+          required: true
       tags:
-      - api
+        - api
       requestBody:
         content:
           application/json:
@@ -462,7 +462,7 @@ paths:
             schema:
               $ref: '#/components/schemas/PatchedQuestionOption'
       security:
-      - jwtAuth: []
+        - jwtAuth: [ ]
       responses:
         '200':
           content:
@@ -473,21 +473,21 @@ paths:
     delete:
       operationId: api_v1_questions_options_destroy
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this question option.
-        required: true
-      - in: path
-        name: question_id
-        schema:
-          type: integer
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this question option.
+          required: true
+        - in: path
+          name: question_id
+          schema:
+            type: integer
+          required: true
       tags:
-      - api
+        - api
       security:
-      - jwtAuth: []
+        - jwtAuth: [ ]
       responses:
         '204':
           description: No response body
@@ -495,22 +495,22 @@ paths:
     get:
       operationId: api_v1_surveys_list
       parameters:
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
+        - name: page
+          required: false
+          in: query
+          description: A page number within the paginated result set.
+          schema:
+            type: integer
+        - name: page_size
+          required: false
+          in: query
+          description: Number of results to return per page.
+          schema:
+            type: integer
       tags:
-      - api
+        - api
       security:
-      - jwtAuth: []
+        - jwtAuth: [ ]
       responses:
         '200':
           content:
@@ -521,7 +521,7 @@ paths:
     post:
       operationId: api_v1_surveys_create
       tags:
-      - api
+        - api
       requestBody:
         content:
           application/json:
@@ -535,7 +535,7 @@ paths:
               $ref: '#/components/schemas/Survey'
         required: true
       security:
-      - jwtAuth: []
+        - jwtAuth: [ ]
       responses:
         '201':
           content:
@@ -547,16 +547,16 @@ paths:
     get:
       operationId: api_v1_surveys_retrieve
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this survey.
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this survey.
+          required: true
       tags:
-      - api
+        - api
       security:
-      - jwtAuth: []
+        - jwtAuth: [ ]
       responses:
         '200':
           content:
@@ -567,14 +567,14 @@ paths:
     put:
       operationId: api_v1_surveys_update
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this survey.
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this survey.
+          required: true
       tags:
-      - api
+        - api
       requestBody:
         content:
           application/json:
@@ -588,7 +588,7 @@ paths:
               $ref: '#/components/schemas/Survey'
         required: true
       security:
-      - jwtAuth: []
+        - jwtAuth: [ ]
       responses:
         '200':
           content:
@@ -599,14 +599,14 @@ paths:
     patch:
       operationId: api_v1_surveys_partial_update
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this survey.
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this survey.
+          required: true
       tags:
-      - api
+        - api
       requestBody:
         content:
           application/json:
@@ -619,7 +619,7 @@ paths:
             schema:
               $ref: '#/components/schemas/PatchedSurvey'
       security:
-      - jwtAuth: []
+        - jwtAuth: [ ]
       responses:
         '200':
           content:
@@ -630,16 +630,16 @@ paths:
     delete:
       operationId: api_v1_surveys_destroy
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this survey.
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this survey.
+          required: true
       tags:
-      - api
+        - api
       security:
-      - jwtAuth: []
+        - jwtAuth: [ ]
       responses:
         '204':
           description: No response body
@@ -647,15 +647,15 @@ paths:
     post:
       operationId: api_v1_surveys_duplicate_create
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
       tags:
-      - api
+        - api
       security:
-      - jwtAuth: []
+        - jwtAuth: [ ]
       responses:
         '200':
           description: No response body
@@ -663,27 +663,27 @@ paths:
     get:
       operationId: api_v1_surveys_participants_list
       parameters:
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - in: path
-        name: survey_id
-        schema:
-          type: integer
-        required: true
+        - name: page
+          required: false
+          in: query
+          description: A page number within the paginated result set.
+          schema:
+            type: integer
+        - name: page_size
+          required: false
+          in: query
+          description: Number of results to return per page.
+          schema:
+            type: integer
+        - in: path
+          name: survey_id
+          schema:
+            type: integer
+          required: true
       tags:
-      - api
+        - api
       security:
-      - jwtAuth: []
+        - jwtAuth: [ ]
       responses:
         '200':
           content:
@@ -694,13 +694,13 @@ paths:
     post:
       operationId: api_v1_surveys_participants_create
       parameters:
-      - in: path
-        name: survey_id
-        schema:
-          type: integer
-        required: true
+        - in: path
+          name: survey_id
+          schema:
+            type: integer
+          required: true
       tags:
-      - api
+        - api
       requestBody:
         content:
           application/json:
@@ -714,7 +714,7 @@ paths:
               $ref: '#/components/schemas/PartitionSurvey'
         required: true
       security:
-      - jwtAuth: []
+        - jwtAuth: [ ]
       responses:
         '201':
           content:
@@ -726,21 +726,21 @@ paths:
     get:
       operationId: api_v1_surveys_participants_retrieve
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this participant survey.
-        required: true
-      - in: path
-        name: survey_id
-        schema:
-          type: integer
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this participant survey.
+          required: true
+        - in: path
+          name: survey_id
+          schema:
+            type: integer
+          required: true
       tags:
-      - api
+        - api
       security:
-      - jwtAuth: []
+        - jwtAuth: [ ]
       responses:
         '200':
           content:
@@ -751,19 +751,19 @@ paths:
     put:
       operationId: api_v1_surveys_participants_update
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this participant survey.
-        required: true
-      - in: path
-        name: survey_id
-        schema:
-          type: integer
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this participant survey.
+          required: true
+        - in: path
+          name: survey_id
+          schema:
+            type: integer
+          required: true
       tags:
-      - api
+        - api
       requestBody:
         content:
           application/json:
@@ -777,7 +777,7 @@ paths:
               $ref: '#/components/schemas/PartitionSurvey'
         required: true
       security:
-      - jwtAuth: []
+        - jwtAuth: [ ]
       responses:
         '200':
           content:
@@ -788,19 +788,19 @@ paths:
     patch:
       operationId: api_v1_surveys_participants_partial_update
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this participant survey.
-        required: true
-      - in: path
-        name: survey_id
-        schema:
-          type: integer
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this participant survey.
+          required: true
+        - in: path
+          name: survey_id
+          schema:
+            type: integer
+          required: true
       tags:
-      - api
+        - api
       requestBody:
         content:
           application/json:
@@ -813,7 +813,7 @@ paths:
             schema:
               $ref: '#/components/schemas/PatchedPartitionSurvey'
       security:
-      - jwtAuth: []
+        - jwtAuth: [ ]
       responses:
         '200':
           content:
@@ -824,21 +824,21 @@ paths:
     delete:
       operationId: api_v1_surveys_participants_destroy
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this participant survey.
-        required: true
-      - in: path
-        name: survey_id
-        schema:
-          type: integer
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this participant survey.
+          required: true
+        - in: path
+          name: survey_id
+          schema:
+            type: integer
+          required: true
       tags:
-      - api
+        - api
       security:
-      - jwtAuth: []
+        - jwtAuth: [ ]
       responses:
         '204':
           description: No response body
@@ -846,27 +846,27 @@ paths:
     get:
       operationId: api_v1_surveys_questions_list
       parameters:
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - in: path
-        name: survey_id
-        schema:
-          type: integer
-        required: true
+        - name: page
+          required: false
+          in: query
+          description: A page number within the paginated result set.
+          schema:
+            type: integer
+        - name: page_size
+          required: false
+          in: query
+          description: Number of results to return per page.
+          schema:
+            type: integer
+        - in: path
+          name: survey_id
+          schema:
+            type: integer
+          required: true
       tags:
-      - api
+        - api
       security:
-      - jwtAuth: []
+        - jwtAuth: [ ]
       responses:
         '200':
           content:
@@ -877,13 +877,13 @@ paths:
     post:
       operationId: api_v1_surveys_questions_create
       parameters:
-      - in: path
-        name: survey_id
-        schema:
-          type: integer
-        required: true
+        - in: path
+          name: survey_id
+          schema:
+            type: integer
+          required: true
       tags:
-      - api
+        - api
       requestBody:
         content:
           application/json:
@@ -897,7 +897,7 @@ paths:
               $ref: '#/components/schemas/SurveyQuestion'
         required: true
       security:
-      - jwtAuth: []
+        - jwtAuth: [ ]
       responses:
         '201':
           content:
@@ -909,21 +909,21 @@ paths:
     get:
       operationId: api_v1_surveys_questions_retrieve
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this survey question.
-        required: true
-      - in: path
-        name: survey_id
-        schema:
-          type: integer
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this survey question.
+          required: true
+        - in: path
+          name: survey_id
+          schema:
+            type: integer
+          required: true
       tags:
-      - api
+        - api
       security:
-      - jwtAuth: []
+        - jwtAuth: [ ]
       responses:
         '200':
           content:
@@ -934,19 +934,19 @@ paths:
     put:
       operationId: api_v1_surveys_questions_update
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this survey question.
-        required: true
-      - in: path
-        name: survey_id
-        schema:
-          type: integer
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this survey question.
+          required: true
+        - in: path
+          name: survey_id
+          schema:
+            type: integer
+          required: true
       tags:
-      - api
+        - api
       requestBody:
         content:
           application/json:
@@ -960,7 +960,7 @@ paths:
               $ref: '#/components/schemas/SurveyQuestion'
         required: true
       security:
-      - jwtAuth: []
+        - jwtAuth: [ ]
       responses:
         '200':
           content:
@@ -971,19 +971,19 @@ paths:
     patch:
       operationId: api_v1_surveys_questions_partial_update
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this survey question.
-        required: true
-      - in: path
-        name: survey_id
-        schema:
-          type: integer
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this survey question.
+          required: true
+        - in: path
+          name: survey_id
+          schema:
+            type: integer
+          required: true
       tags:
-      - api
+        - api
       requestBody:
         content:
           application/json:
@@ -996,7 +996,7 @@ paths:
             schema:
               $ref: '#/components/schemas/PatchedSurveyQuestion'
       security:
-      - jwtAuth: []
+        - jwtAuth: [ ]
       responses:
         '200':
           content:
@@ -1007,21 +1007,21 @@ paths:
     delete:
       operationId: api_v1_surveys_questions_destroy
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this survey question.
-        required: true
-      - in: path
-        name: survey_id
-        schema:
-          type: integer
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this survey question.
+          required: true
+        - in: path
+          name: survey_id
+          schema:
+            type: integer
+          required: true
       tags:
-      - api
+        - api
       security:
-      - jwtAuth: []
+        - jwtAuth: [ ]
       responses:
         '204':
           description: No response body
@@ -1029,32 +1029,32 @@ paths:
     get:
       operationId: api_v1_surveys_questions_answers_list
       parameters:
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - in: path
-        name: question_id
-        schema:
-          type: integer
-        required: true
-      - in: path
-        name: survey_id
-        schema:
-          type: integer
-        required: true
+        - name: page
+          required: false
+          in: query
+          description: A page number within the paginated result set.
+          schema:
+            type: integer
+        - name: page_size
+          required: false
+          in: query
+          description: Number of results to return per page.
+          schema:
+            type: integer
+        - in: path
+          name: question_id
+          schema:
+            type: integer
+          required: true
+        - in: path
+          name: survey_id
+          schema:
+            type: integer
+          required: true
       tags:
-      - api
+        - api
       security:
-      - jwtAuth: []
+        - jwtAuth: [ ]
       responses:
         '200':
           content:
@@ -1065,18 +1065,18 @@ paths:
     post:
       operationId: api_v1_surveys_questions_answers_create
       parameters:
-      - in: path
-        name: question_id
-        schema:
-          type: integer
-        required: true
-      - in: path
-        name: survey_id
-        schema:
-          type: integer
-        required: true
+        - in: path
+          name: question_id
+          schema:
+            type: integer
+          required: true
+        - in: path
+          name: survey_id
+          schema:
+            type: integer
+          required: true
       tags:
-      - api
+        - api
       requestBody:
         content:
           application/json:
@@ -1090,7 +1090,7 @@ paths:
               $ref: '#/components/schemas/Answer'
         required: true
       security:
-      - jwtAuth: []
+        - jwtAuth: [ ]
       responses:
         '201':
           content:
@@ -1102,26 +1102,26 @@ paths:
     get:
       operationId: api_v1_surveys_questions_answers_retrieve
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this answer.
-        required: true
-      - in: path
-        name: question_id
-        schema:
-          type: integer
-        required: true
-      - in: path
-        name: survey_id
-        schema:
-          type: integer
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this answer.
+          required: true
+        - in: path
+          name: question_id
+          schema:
+            type: integer
+          required: true
+        - in: path
+          name: survey_id
+          schema:
+            type: integer
+          required: true
       tags:
-      - api
+        - api
       security:
-      - jwtAuth: []
+        - jwtAuth: [ ]
       responses:
         '200':
           content:
@@ -1132,24 +1132,24 @@ paths:
     put:
       operationId: api_v1_surveys_questions_answers_update
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this answer.
-        required: true
-      - in: path
-        name: question_id
-        schema:
-          type: integer
-        required: true
-      - in: path
-        name: survey_id
-        schema:
-          type: integer
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this answer.
+          required: true
+        - in: path
+          name: question_id
+          schema:
+            type: integer
+          required: true
+        - in: path
+          name: survey_id
+          schema:
+            type: integer
+          required: true
       tags:
-      - api
+        - api
       requestBody:
         content:
           application/json:
@@ -1163,7 +1163,7 @@ paths:
               $ref: '#/components/schemas/Answer'
         required: true
       security:
-      - jwtAuth: []
+        - jwtAuth: [ ]
       responses:
         '200':
           content:
@@ -1174,24 +1174,24 @@ paths:
     patch:
       operationId: api_v1_surveys_questions_answers_partial_update
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this answer.
-        required: true
-      - in: path
-        name: question_id
-        schema:
-          type: integer
-        required: true
-      - in: path
-        name: survey_id
-        schema:
-          type: integer
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this answer.
+          required: true
+        - in: path
+          name: question_id
+          schema:
+            type: integer
+          required: true
+        - in: path
+          name: survey_id
+          schema:
+            type: integer
+          required: true
       tags:
-      - api
+        - api
       requestBody:
         content:
           application/json:
@@ -1204,7 +1204,7 @@ paths:
             schema:
               $ref: '#/components/schemas/PatchedAnswer'
       security:
-      - jwtAuth: []
+        - jwtAuth: [ ]
       responses:
         '200':
           content:
@@ -1215,26 +1215,26 @@ paths:
     delete:
       operationId: api_v1_surveys_questions_answers_destroy
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this answer.
-        required: true
-      - in: path
-        name: question_id
-        schema:
-          type: integer
-        required: true
-      - in: path
-        name: survey_id
-        schema:
-          type: integer
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this answer.
+          required: true
+        - in: path
+          name: question_id
+          schema:
+            type: integer
+          required: true
+        - in: path
+          name: survey_id
+          schema:
+            type: integer
+          required: true
       tags:
-      - api
+        - api
       security:
-      - jwtAuth: []
+        - jwtAuth: [ ]
       responses:
         '204':
           description: No response body
@@ -1245,7 +1245,7 @@ paths:
         Takes a set of user credentials and returns an access and refresh JSON web
         token pair to prove the authentication of those credentials.
       tags:
-      - api
+        - api
       requestBody:
         content:
           application/json:
@@ -1272,7 +1272,7 @@ paths:
         Takes a refresh type JSON web token and returns an access type JSON web
         token if the refresh token is valid.
       tags:
-      - api
+        - api
       requestBody:
         content:
           application/json:
@@ -1299,7 +1299,7 @@ paths:
         Takes a token and indicates if it is valid.  This view provides no
         information about a token's fitness for a particular use.
       tags:
-      - api
+        - api
       requestBody:
         content:
           application/json:
@@ -1348,12 +1348,12 @@ components:
         answered_by:
           type: integer
       required:
-      - answer_updated_at
-      - answered_at
-      - answered_by
-      - id
-      - question
-      - survey
+        - answer_updated_at
+        - answered_at
+        - answered_by
+        - id
+        - question
+        - survey
     CoreTokenObtainPair:
       type: object
       properties:
@@ -1364,8 +1364,8 @@ components:
           type: string
           writeOnly: true
       required:
-      - password
-      - username
+        - password
+        - username
     PaginatedAnswerList:
       type: object
       properties:
@@ -1530,12 +1530,12 @@ components:
         survey:
           type: integer
       required:
-      - id
-      - invited_participant_at
-      - participant
-      - participant_joined_at
-      - status
-      - survey
+        - id
+        - invited_participant_at
+        - participant
+        - participant_joined_at
+        - status
+        - survey
     PatchedAnswer:
       type: object
       properties:
@@ -1720,12 +1720,12 @@ components:
         question_created_by:
           type: integer
       required:
-      - content
-      - id
-      - question_created_at
-      - question_created_by
-      - question_type
-      - question_updated_at
+        - content
+        - id
+        - question_created_at
+        - question_created_by
+        - question_type
+        - question_updated_at
     QuestionOption:
       type: object
       properties:
@@ -1747,11 +1747,11 @@ components:
         question:
           type: integer
       required:
-      - content
-      - id
-      - option_created_at
-      - option_updated_at
-      - question
+        - content
+        - id
+        - option_created_at
+        - option_updated_at
+        - question
     QuestionType:
       type: object
       properties:
@@ -1764,8 +1764,8 @@ components:
         is_active:
           type: boolean
       required:
-      - id
-      - name
+        - id
+        - name
     Survey:
       type: object
       properties:
@@ -1804,14 +1804,14 @@ components:
             type: integer
           readOnly: true
       required:
-      - end_date
-      - id
-      - participant
-      - questions
-      - start_date
-      - survey_created_at
-      - survey_updated_at
-      - title
+        - end_date
+        - id
+        - participant
+        - questions
+        - start_date
+        - survey_created_at
+        - survey_updated_at
+        - title
     SurveyQuestion:
       type: object
       properties:
@@ -1835,12 +1835,12 @@ components:
         asked_by:
           type: integer
       required:
-      - adjusted_at
-      - asked_at
-      - asked_by
-      - id
-      - question
-      - survey
+        - adjusted_at
+        - asked_at
+        - asked_by
+        - id
+        - question
+        - survey
     TokenRefresh:
       type: object
       properties:
@@ -1851,8 +1851,8 @@ components:
           type: string
           writeOnly: true
       required:
-      - access
-      - refresh
+        - access
+        - refresh
     TokenVerify:
       type: object
       properties:
@@ -1860,7 +1860,7 @@ components:
           type: string
           writeOnly: true
       required:
-      - token
+        - token
   securitySchemes:
     jwtAuth:
       type: http

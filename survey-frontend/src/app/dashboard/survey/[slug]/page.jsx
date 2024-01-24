@@ -1,5 +1,6 @@
 'use client'
 import TabSurveyQuestion from '@/components/survey/TabSurveyQuestion';
+import TabSurveyResult from '@/components/survey/TabSurveyResult';
 import { fetchGetSurveyDetail } from '@/redux/slices/surveySlice';
 import { Tabs } from 'antd';
 import React, { useState, useEffect, useRef } from 'react'
@@ -28,7 +29,7 @@ const SurveyDetail = ({ params }) => {
         {
             label: 'Result',
             key: 'result',
-            children: <TabContent />,
+            children: <TabSurveyResult slug={slug} />,
         },
     ]
 

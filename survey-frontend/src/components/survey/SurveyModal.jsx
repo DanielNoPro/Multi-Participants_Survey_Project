@@ -55,12 +55,14 @@ const SurveyModal = ({ data, setData, isUpdate }) => {
     };
 
     const handleUpdate = async () => {
-        let formData = new FormData()
-        formData.append('title', data.title)
-        formData.append('description', data?.description)
-        formData.append('start_date', new Date(data?.start_date).toISOString())
-        formData.append('end_date', new Date(data?.end_date).toISOString())
-        formData.append('is_active', data?.is_active)
+        let formData = {
+            title: data?.title,
+            description: data?.description,
+            start_date: new Date(data?.start_date).toISOString(),
+            end_date: new Date(data?.end_date).toISOString(),
+            is_active: true,
+            survey_questions: []
+        }
         const res = await surveyService.updateSurvey(data.id, formData)
         if (res) {
             dispatch(fetchGetSurveys(1));

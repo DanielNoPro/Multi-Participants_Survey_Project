@@ -1,8 +1,8 @@
 import api from "@/constants/api"
 
 export const questionService = {
-    getQuestions(page) {
-        return api.get(`/api/v1/questions/?page=${page}&page_size=10`)
+    getQuestions(page, size) {
+        return api.get(`/api/v1/questions/?page=${page}&page_size=${size}`)
     },
 
     getQuestionTypes() {

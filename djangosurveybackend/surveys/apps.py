@@ -9,3 +9,5 @@ class SurveysConfig(AppConfig):
 
     def ready(self):
         container.wire(modules=[".views"])
+        from surveys import scheduler
+        scheduler.start()

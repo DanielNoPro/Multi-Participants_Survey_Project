@@ -1,12 +1,12 @@
 """Containers module."""
-
+from apscheduler.schedulers.background import BackgroundScheduler
 from dependency_injector import containers, providers
 from django.conf import settings
+
 from . import services
 
 
 class Container(containers.DeclarativeContainer):
-
     config = providers.Configuration()
 
     mail_service = providers.Factory(

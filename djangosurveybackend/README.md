@@ -3,13 +3,17 @@
 ## Familiar with models and admin
 
 - Create folder and activate environment:
+
 ```cmd
 py -m venv venv
 ```
+
 - Activate the virtual environment:
+
 ```cmd
 venv\Scripts\activate
 ```
+
 - Install Django:
     - pip install django
 - Start new project: django-admin startproject core .
@@ -24,13 +28,14 @@ venv\Scripts\activate
 - Run server
 
 ## Open API schema
+
 Refer : https://drf-spectacular.readthedocs.io/en/latest/readme.html
 
 - To generate new schema:
+
 ```cmd
 python manage.py spectacular --color --file schema.yml
 ```
-
 
 ## Testing -> Models
 
@@ -57,17 +62,20 @@ pip freeze > requirements.txt
 ```
 
 To migrate database
+
 ```cmd
 python manage.py makemigrations
 python manage.py migrate
 ```
 
 To create super user
+
 ```cmd
 python manage.py createsuperuser
 ```
 
 To check error
+
 ```cmd
 flake8 . --max-line-length=127
 ```

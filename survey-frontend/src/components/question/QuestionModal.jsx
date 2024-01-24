@@ -70,12 +70,12 @@ const QuestionModal = ({ data, setData, isUpdate, initialData, questionOptions, 
             }
             const res = await questionService.createQuestion(newData)
             if (res) {
-                dispatch(fetchGetQuestions(1));
+                dispatch(fetchGetQuestions({ page: 1, size: 10 }));
             }
         } else {
             const res = await questionService.createQuestion(data)
             if (res) {
-                dispatch(fetchGetQuestions(1));
+                dispatch(fetchGetQuestions({ page: 1, size: 10 }));
             }
         }
         dispatch(setModalQuestion(false))
@@ -83,12 +83,11 @@ const QuestionModal = ({ data, setData, isUpdate, initialData, questionOptions, 
     };
 
     const handleUpdate = async () => {
-        console.log(data);
         let formData = new FormData()
         formData.append('content', data.content)
         const res = await questionService.updateQuestion(data.id, formData)
         if (res) {
-            dispatch(fetchGetQuestions(1));
+            dispatch(fetchGetQuestions({ page: 1, size: 10 }));
             dispatch(setModalQuestion(false))
         }
     }
@@ -137,95 +136,181 @@ const QuestionModal = ({ data, setData, isUpdate, initialData, questionOptions, 
     }
 
     const renderQuestionOption = (type) => {
-        switch (type) {
-            case 1:
-                break;
-            case 2: case 3:
-                if (isUpdate) {
-                    return (
-                        <Space direction="vertical" style={{ width: '100%', marginTop: '10px' }}>
-                            <Button type="primary" icon={<PlusOutlined />} onClick={addExtraOptions}>
-                                Add Option
-                            </Button>
-                            {questionOptions.map((item, index) => {
-                                return (
-                                    <div style={{ display: 'flex', gap: '5px' }} key={item.id}>
-                                        <Input addonBefore="Option" value={item.content} onChange={(e) => handleChangeEditOption(e, item.id)} />
-                                        <Button
-                                            type="primary"
-                                            shape="circle"
-                                            icon={<EditOutlined />}
-                                            onClick={() => updateOption(data.id, item.id)}
-                                            style={{ backgroundColor: '#28a745' }}
-                                        />
-                                        <Button
-                                            type="primary"
-                                            shape="circle"
-                                            icon={<MinusOutlined />}
-                                            danger
-                                            onClick={() => removeEditOption(data.id, item.id)}
-                                        />
-                                    </div>
-                                )
-                            })}
-                            {Object.keys(extraOptions).length > 0 ? (
-                                <div style={{ display: 'flex', gap: '5px' }}>
-                                    <Input addonBefore="Extra" value={extraOptions?.content} onChange={handleChangeExtraOption} />
+        if (type == 1 || type == "") {
+            return
+        } else {
+            if (isUpdate) {
+                return (
+                    <Space direction="vertical" style={{ width: '100%', marginTop: '10px' }}>
+                        <Button type="primary" icon={<PlusOutlined />} onClick={addExtraOptions} disabled={questionOptions?.length > 5}>
+                            Add Option
+                        </Button>
+                        {questionOptions.map((item, index) => {
+                            return (
+                                <div style={{ display: 'flex', gap: '5px' }} key={item.id}>
+                                    <Input addonBefore="Option" value={item.content} onChange={(e) => handleChangeEditOption(e, item.id)} />
                                     <Button
                                         type="primary"
                                         shape="circle"
-                                        icon={<CheckOutlined />}
-                                        onClick={createOptionQuestion}
+                                        icon={<EditOutlined />}
+                                        onClick={() => updateOption(data.id, item.id)}
                                         style={{ backgroundColor: '#28a745' }}
                                     />
                                     <Button
                                         type="primary"
                                         shape="circle"
-                                        icon={<CloseOutlined />}
+                                        icon={<MinusOutlined />}
                                         danger
-                                        onClick={removeExtraOption}
+                                        onClick={() => removeEditOption(data.id, item.id)}
                                     />
                                 </div>
-                            ) : (
-                                <></>
-                            )}
-                        </Space>
-                    );
-                } else {
-                    return (
-                        <Space direction="vertical" style={{ width: '100%', marginTop: '10px' }}>
-                            {data.options.map((item, index) => {
-                                return (
-                                    <div style={{ display: 'flex', gap: '5px' }} key={index}>
-                                        <Input addonBefore="Option" value={item.content} onChange={(e) => handleChangeOption(e, index)} />
-                                        {index == 0 ?
-                                            (
-                                                <Button
-                                                    type="primary"
-                                                    shape="circle"
-                                                    icon={<PlusOutlined />}
-                                                    onClick={addOption}
-                                                />
-                                            ) : (
-                                                <Button
-                                                    type="primary"
-                                                    shape="circle"
-                                                    icon={<MinusOutlined />}
-                                                    danger
-                                                    onClick={() => removeOption(index)}
-                                                />
-                                            )
-                                        }
-                                    </div>
-                                )
-                            })}
-                        </Space>
-                    );
-                }
-                break;
-            default:
-                break;
+                            )
+                        })}
+                        {Object.keys(extraOptions).length > 0 ? (
+                            <div style={{ display: 'flex', gap: '5px' }}>
+                                <Input addonBefore="Extra" value={extraOptions?.content} onChange={handleChangeExtraOption} />
+                                <Button
+                                    type="primary"
+                                    shape="circle"
+                                    icon={<CheckOutlined />}
+                                    onClick={createOptionQuestion}
+                                    style={{ backgroundColor: '#28a745' }}
+                                />
+                                <Button
+                                    type="primary"
+                                    shape="circle"
+                                    icon={<CloseOutlined />}
+                                    danger
+                                    onClick={removeExtraOption}
+                                />
+                            </div>
+                        ) : (
+                            <></>
+                        )}
+                    </Space>
+                );
+            } else {
+                return (
+                    <Space direction="vertical" style={{ width: '100%', marginTop: '10px' }}>
+                        {data.options.map((item, index) => {
+                            return (
+                                <div style={{ display: 'flex', gap: '5px' }} key={index}>
+                                    <Input addonBefore="Option" value={item.content} onChange={(e) => handleChangeOption(e, index)} />
+                                    {index == 0 ?
+                                        (
+                                            <Button
+                                                type="primary"
+                                                shape="circle"
+                                                icon={<PlusOutlined />}
+                                                onClick={addOption}
+                                                disabled={data?.options?.length > 5}
+                                            />
+                                        ) : (
+                                            <Button
+                                                type="primary"
+                                                shape="circle"
+                                                icon={<MinusOutlined />}
+                                                danger
+                                                onClick={() => removeOption(index)}
+                                            />
+                                        )
+                                    }
+                                </div>
+                            )
+                        })}
+                    </Space>
+                );
+            }
         }
+        // switch (type) {
+        //     case 1:
+        //         break;
+        //     case 2: case 3:
+        //         if (isUpdate) {
+        //             return (
+        //                 <Space direction="vertical" style={{ width: '100%', marginTop: '10px' }}>
+        //                     <Button type="primary" icon={<PlusOutlined />} onClick={addExtraOptions}>
+        //                         Add Option
+        //                     </Button>
+        //                     {questionOptions.map((item, index) => {
+        //                         return (
+        //                             <div style={{ display: 'flex', gap: '5px' }} key={item.id}>
+        //                                 <Input addonBefore="Option" value={item.content} onChange={(e) => handleChangeEditOption(e, item.id)} />
+        //                                 <Button
+        //                                     type="primary"
+        //                                     shape="circle"
+        //                                     icon={<EditOutlined />}
+        //                                     onClick={() => updateOption(data.id, item.id)}
+        //                                     style={{ backgroundColor: '#28a745' }}
+        //                                 />
+        //                                 <Button
+        //                                     type="primary"
+        //                                     shape="circle"
+        //                                     icon={<MinusOutlined />}
+        //                                     danger
+        //                                     onClick={() => removeEditOption(data.id, item.id)}
+        //                                 />
+        //                             </div>
+        //                         )
+        //                     })}
+        //                     {Object.keys(extraOptions).length > 0 ? (
+        //                         <div style={{ display: 'flex', gap: '5px' }}>
+        //                             <Input addonBefore="Extra" value={extraOptions?.content} onChange={handleChangeExtraOption} />
+        //                             <Button
+        //                                 type="primary"
+        //                                 shape="circle"
+        //                                 icon={<CheckOutlined />}
+        //                                 onClick={createOptionQuestion}
+        //                                 style={{ backgroundColor: '#28a745' }}
+        //                             />
+        //                             <Button
+        //                                 type="primary"
+        //                                 shape="circle"
+        //                                 icon={<CloseOutlined />}
+        //                                 danger
+        //                                 onClick={removeExtraOption}
+        //                             />
+        //                         </div>
+        //                     ) : (
+        //                         <></>
+        //                     )}
+        //                 </Space>
+        //             );
+        //         } else {
+        //             return (
+        //                 <Space direction="vertical" style={{ width: '100%', marginTop: '10px' }}>
+        //                     {data.options.map((item, index) => {
+        //                         return (
+        //                             <div style={{ display: 'flex', gap: '5px' }} key={index}>
+        //                                 <Input addonBefore="Option" value={item.content} onChange={(e) => handleChangeOption(e, index)} />
+        //                                 {index == 0 ?
+        //                                     (
+        //                                         <Button
+        //                                             type="primary"
+        //                                             shape="circle"
+        //                                             icon={<PlusOutlined />}
+        //                                             onClick={addOption}
+        //                                         />
+        //                                     ) : (
+        //                                         <Button
+        //                                             type="primary"
+        //                                             shape="circle"
+        //                                             icon={<MinusOutlined />}
+        //                                             danger
+        //                                             onClick={() => removeOption(index)}
+        //                                         />
+        //                                     )
+        //                                 }
+        //                             </div>
+        //                         )
+        //                     })}
+        //                 </Space>
+        //             );
+        //         }
+        //         break;
+        //     default:
+        //         break;
+        // }
     }
 
     const addOption = () => {
@@ -281,6 +366,7 @@ const QuestionModal = ({ data, setData, isUpdate, initialData, questionOptions, 
                             label: item.name
                         }))}
                         value={data.question_type}
+                        disabled={isUpdate}
                     />
                     {renderQuestionOption(data.question_type)}
                 </Space>

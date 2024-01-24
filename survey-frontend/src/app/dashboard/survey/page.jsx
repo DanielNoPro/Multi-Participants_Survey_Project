@@ -1,12 +1,12 @@
 'use client'
 import React, { useState, useEffect, useRef } from 'react'
-import { Button, DatePicker, Dropdown, Input, Modal, Table } from 'antd';
+import { Button, DatePicker, Dropdown, Input, message, Modal, Table } from 'antd';
 import {
     DeleteOutlined,
     EditOutlined,
     SendOutlined,
     CopyOutlined,
-    BorderOuterOutlined
+    MenuOutlined
 } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchCreateSurvey, fetchDeleteSurvey, fetchGetSurveys, setModalSurvey } from '@/redux/slices/surveySlice';
@@ -15,14 +15,20 @@ import { surveyService } from '@/services/surveyService';
 const { Search } = Input;
 import moment from 'moment';
 import { useRouter } from 'next/navigation';
-
-
+import { ReactMultiEmail, isEmail } from 'react-multi-email';
+import 'react-multi-email/dist/style.css';
 
 const SurveyPage = () => {
     const { surveys, loadingSurvey } = useSelector((state) => state.survey)
     const dispatch = useDispatch()
     const [dataSurvey, setDataSurvey] = useState({})
     const [isUpdate, setIsUpdate] = useState(false)
+    const [sendModal, setSendModal] = useState(false)
+    const [idSurvey, setIdSurvey] = useState(null)
+    const [emails, setEmails] = useState([]);
+    const [focused, setFocused] = useState(false);
+    const [messageApi, contextHolder] = message.useMessage();
+
     const router = useRouter()
 
     const createSurvey = () => {
@@ -103,11 +109,12 @@ const SurveyPage = () => {
                             domEvent.stopPropagation()
                         }
                     }}
+                    trigger={['click']}
                 >
                     <a onClick={(e) => {
                         e.stopPropagation()
                     }}>
-                        <BorderOuterOutlined />
+                        <MenuOutlined />
                     </a>
                 </Dropdown>
             ),
@@ -124,7 +131,7 @@ const SurveyPage = () => {
                 editSurvey(record?.id)
                 break;
             case "invite":
-                // onClickFunction()
+                handleOpenSendModal(record?.id)
                 break;
             case "duplicate":
                 duplicateSurvey(record?.id)
@@ -144,6 +151,38 @@ const SurveyPage = () => {
     useEffect(() => {
         dispatch(fetchGetSurveys(1))
     }, []);
+
+    const handleOpenSendModal = (id) => {
+        setIdSurvey(id)
+        setSendModal(true)
+    }
+    const success = () => {
+        messageApi.open({
+            type: 'success',
+            content: 'A login token has been sent to your emails.',
+        });
+        setEmails([])
+        setSendModal(false)
+    };
+
+    const handleSend = () => {
+        emails.forEach( async element => {
+            const res = await surveyService.sendSurvey({
+                email: element,
+                tenant: 1,
+                unit: 1,
+                service: 1,
+                survey: idSurvey
+            })
+            console.log(res);
+        });
+        success();
+    }
+
+    const handleCancelSend = () => {
+        setEmails([])
+        setSendModal(false)
+    }
 
     return (
         <div>
@@ -165,12 +204,46 @@ const SurveyPage = () => {
                 }}
                 pagination={{
                     pageSize: 10,
-                    total: surveys.total,
+                    // total: surveys.total,
                     onChange: (page) => {
                         dispatch(fetchGetSurveys(page))
                     },
                 }}
             />
+            <Modal open={sendModal} closeIcon={null} destroyOnClose={true}
+                footer={[
+                    <Button key="back" onClick={handleCancelSend}>
+                        Cancel
+                    </Button>,
+                    <Button key="submit" type="primary" onClick={handleSend}>
+                        Send Invitation
+                    </Button>
+                ]}
+            >
+                <div style={{ textAlign: 'center', marginBottom: '10px', fontSize: '20px' }}>
+                    <p>Emails</p>
+                </div>
+                <ReactMultiEmail
+                    placeholder='Input your email then press "Enter"'
+                    emails={emails}
+                    onChange={(_emails) => {
+                        setEmails(_emails);
+                    }}
+                    autoFocus={true}
+                    onFocus={() => setFocused(true)}
+                    onBlur={() => setFocused(false)}
+                    getLabel={(email, index, removeEmail) => {
+                        return (
+                            <div data-tag key={index}>
+                                <div data-tag-item>{email}</div>
+                                <span data-tag-handle onClick={() => removeEmail(index)}>
+                                    X
+                                </span>
+                            </div>
+                        );
+                    }}
+                />
+            </Modal>
         </div>
     )
 }

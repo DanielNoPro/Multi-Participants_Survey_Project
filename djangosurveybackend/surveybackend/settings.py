@@ -29,6 +29,10 @@ SECRET_KEY = os.getenv("SECRET_KEY", 'django-insecure-p4z8wc%#0t5lgc1pl!!5r^9u#-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(os.getenv("DEBUG_MODE", "True"))
 
+AUTH_USER_MODEL = 'authenticate.PasswordlessUser'
+
+AUTH_USER_MODEL_MODULE = 'authenticate.models.PasswordlessUser'
+
 ALLOWED_HOSTS = ["*"]
 
 CORS_ALLOWED_ORIGINS = [
@@ -38,10 +42,10 @@ CORS_ALLOWED_ORIGINS = [
 # EMAIL CONFIG
 DEFAULT_FROM_EMAIL = 'admin@survey.com'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = os.getenv('EMAIL_HOST', 'sandbox.smtp.mailtrap.io')
-EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', '58bb229111775a')
-EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASS', '91e35fdf4ea0b0')
-EMAIL_PORT = os.getenv('EMAIL_PORT', '2525')
+EMAIL_HOST = os.getenv('EMAIL_HOST', 'smtp.gmail.com')
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', 'nhanphamquangx196@gmail.com')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASS', 'xltfqysmrinwojpd')
+EMAIL_PORT = int(os.getenv('EMAIL_PORT', '587'))
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 
@@ -51,10 +55,6 @@ LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
     "formatters": {
-        "json": {
-            "()": structlog.stdlib.ProcessorFormatter,
-            "processor": structlog.processors.JSONRenderer(),
-        },
         "plain": {
             "()": structlog.stdlib.ProcessorFormatter,
             "processor": structlog.dev.ConsoleRenderer(),
@@ -69,28 +69,23 @@ LOGGING = {
             "class": "logging.StreamHandler",
             "formatter": "plain",
         },
-        "json_file": {
+        "file": {
             "class": "logging.handlers.WatchedFileHandler",
             "filename": "logs/app.log",
-            "formatter": "json",
-        },
-        "flat_file": {
-            "class": "logging.handlers.WatchedFileHandler",
-            "filename": "logs/flat_line.log",
             "formatter": "key_value",
         },
     },
     "root": {
-        "handlers": ["console", "flat_file", "json_file"],
+        "handlers": ["console", "file"],
         "level": os.getenv("DJANGO_LOG_LEVEL", "INFO"),
     },
     "loggers": {
         "django_structlog": {
-            "handlers": ["console", "flat_file", "json_file"],
+            "handlers": ["console", "file"],
             "level": os.getenv("DJANGO_LOG_LEVEL", "INFO"),
         },
         "django": {
-            "handlers": ["console", "json_file", "flat_file"],
+            "handlers": ["console", "file"],
             "level": os.getenv("DJANGO_LOG_LEVEL", "INFO"),
             "propagate": False,
         },
@@ -134,6 +129,8 @@ INSTALLED_APPS = [
     'drf_spectacular_sidecar',
     # Application survey
     'surveys.apps.SurveysConfig',
+    'authenticate',
+    'tenant',
 
     # Passwordless
     'drfpasswordless',
@@ -141,6 +138,9 @@ INSTALLED_APPS = [
     # Logging
     "log_viewer",
     "django_structlog",
+
+    # Task Scheduler
+    "django_apscheduler",
 
     'health_check',
     'health_check.db',
@@ -156,14 +156,20 @@ REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
     'DEFAULT_PAGINATION_CLASS': 'core.pagination.pagination.BaseResultsSetPagination',
     'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.BasicAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-        'rest_framework.authentication.TokenAuthentication',
+        'authenticate.authentication.ExpiringTokenAuthentication'
     ]
 }
 
 PASSWORDLESS_AUTH = {
     'PASSWORDLESS_AUTH_TYPES': ['EMAIL'],
     'PASSWORDLESS_EMAIL_NOREPLY_ADDRESS': 'noreply@survey.com',
+    'PASSWORDLESS_AUTH_TOKEN_CREATOR': 'authenticate.authentication.create_authentication_token',
+    'PASSWORDLESS_EMAIL_CALLBACK': 'authenticate.authentication.send_email_with_callback_magic_link',
+    'PASSWORDLESS_AUTH_TOKEN_SERIALIZER': 'drfpasswordless.serializers.TokenResponseSerializer',
+    'PASSWORDLESS_TOKEN_EXPIRE_TIME': 24 * 60 * 60,
+    'PASSWORDLESS_EMAIL_TOKEN_HTML_TEMPLATE_NAME': "surveys/survey_magic_link.html",
 }
 
 SPECTACULAR_SETTINGS = {
@@ -172,6 +178,7 @@ SPECTACULAR_SETTINGS = {
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
     'SERVE_PERMISSIONS': ['rest_framework.permissions.AllowAny'],
+    'SCHEMA_PATH_PREFIX': r'/api/v[0-9]',
     # OTHER SETTINGS
 }
 
@@ -288,18 +295,36 @@ FIXTURE_DIRS = BASE_DIR / "fixtures"
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Invitation
-SURVEY_SUBJECT = 'Invitation for survey'
+REMINDER_SURVEY_INTERVAL = timedelta(hours=24)
+SURVEY_SENDER = PASSWORDLESS_AUTH['PASSWORDLESS_EMAIL_NOREPLY_ADDRESS']
+SURVEY_SUBJECT = 'Reminder for survey'
 SURVEY_TEMPLATE = 'survey_invitation'
+PASSWORDLESS_AUTH_LINK_CREATOR = 'surveys.utils.create_survey_auth_link'
+PASSWORDLESS_AUTH_CLAIM_CREATOR = 'surveys.utils.create_auth_claim'
 
 # LOG Config
-LOG_VIEWER_FILES = ['flat_line.log']
-LOG_VIEWER_FILES_PATTERN = 'flat_line.log*'
+LOG_VIEWER_FILES = ['app.log']
+LOG_VIEWER_FILES_PATTERN = 'app.log*'
 LOG_VIEWER_FILES_DIR = 'logs/'
 LOG_VIEWER_PAGE_LENGTH = 25  # total log lines per-page
 LOG_VIEWER_MAX_READ_LINES = 1000  # total log lines will be read
 LOG_VIEWER_FILE_LIST_MAX_ITEMS_PER_PAGE = 25  # Max log files loaded in Datatable per page
-LOG_VIEWER_PATTERNS = ['timestamp', '{']
+LOG_VIEWER_PATTERNS = ['timestamp']
 LOG_VIEWER_EXCLUDE_TEXT_PATTERN = None  # String regex expression to exclude the log from line
 
 # Optionally you can set the next variables in order to customize the admin:
 LOG_VIEWER_FILE_LIST_TITLE = "Survey Service Logging"
+
+# This scheduler config will:
+# - Store jobs in the project database
+# - Execute jobs in threads inside the application process
+SCHEDULER_CONFIG = {
+    "apscheduler.jobstores.default": {
+        "class": "django_apscheduler.jobstores:DjangoJobStore"
+    },
+    'apscheduler.executors.processpool': {
+        "type": "threadpool"
+    },
+    'timezone': TIME_ZONE
+}
+SCHEDULER_AUTOSTART = True

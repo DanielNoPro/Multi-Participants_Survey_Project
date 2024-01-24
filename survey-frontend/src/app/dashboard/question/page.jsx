@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
     DeleteOutlined,
     EditOutlined,
-    BorderOuterOutlined
+    MenuOutlined
 } from '@ant-design/icons';
 import QuestionModal from '@/components/question/QuestionModal';
 import { questionService } from '@/services/questionService';
@@ -72,7 +72,7 @@ const page = () => {
                     trigger={['click']}
                 >
                     <a onClick={(e) => e.preventDefault()}>
-                        <BorderOuterOutlined />
+                        <MenuOutlined />
                     </a>
                 </Dropdown>
             ),
@@ -94,7 +94,7 @@ const page = () => {
 
     const deleteQuestion = (id) => {
         questionService.deleteQuestion(id).then(() => {
-            dispatch(fetchGetQuestions(1))
+            handleGetQuestions(1, 10)
         })
     }
 
@@ -106,6 +106,8 @@ const page = () => {
                 return <p>Multiple Choice</p>
             case 3:
                 return <p>Likert</p>
+            case 4:
+                return <p>Dropdown</p>
             default:
                 break;
         }
@@ -134,7 +136,7 @@ const page = () => {
     }
 
     useEffect(() => {
-        dispatch(fetchGetQuestions(1))
+        handleGetQuestions(1, 10)
     }, []);
 
     const createQuestion = async () => {
@@ -142,6 +144,14 @@ const page = () => {
         setIsUpdate(false)
         dispatch(setModalQuestion(true))
         dispatch(fetchGetQuestionTypes())
+    }
+
+    const handleGetQuestions = (page, size) => {
+        let params = {
+            page: page,
+            size: size
+        }
+        dispatch(fetchGetQuestions(params))
     }
 
     return (
@@ -159,13 +169,14 @@ const page = () => {
             <Table
                 loading={loading}
                 columns={columns}
+                size='middle'
                 dataSource={questions.data}
                 rowKey={(record) => record.id}
                 pagination={{
                     pageSize: 10,
-                    total: questions.total,
+                    // total: questions.total,
                     onChange: (page) => {
-                        dispatch(fetchGetQuestions(page))
+                        handleGetQuestions(page, 10)
                     },
                 }}
             />
