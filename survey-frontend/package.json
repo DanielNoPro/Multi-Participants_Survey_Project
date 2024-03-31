@@ -24,7 +24,8 @@
     "react-likert-scale": "^4.1.2",
     "react-multi-email": "^1.0.19",
     "react-redux": "^9.0.4",
-    "redux": "^5.0.0"
+    "redux": "^5.0.0",
+    "sharp": "^0.33.2"
   },
   "devDependencies": {
     "autoprefixer": "^10.0.1",

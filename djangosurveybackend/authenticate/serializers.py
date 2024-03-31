@@ -6,4 +6,4 @@ from authenticate.models import PasswordlessUser
 class PasswordlessUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = PasswordlessUser
-        fields = '__all__'
+        fields = "__all__"

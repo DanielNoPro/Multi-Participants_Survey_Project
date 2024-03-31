@@ -4,10 +4,11 @@ from surveybackend import container
 
 
 class SurveysConfig(AppConfig):
-    default_auto_field = 'django.db.models.BigAutoField'
-    name = 'surveys'
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "surveys"
 
     def ready(self):
         container.wire(modules=[".views"])
         from surveys import scheduler
+
         scheduler.start()

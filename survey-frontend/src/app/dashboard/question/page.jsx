@@ -1,12 +1,14 @@
 'use client'
-import { fetchGetQuestions, fetchGetQuestionTypes, setModalQuestion } from '@/redux/slices/questionSlice';
+import { fetchGetQuestions, fetchGetQuestionTypes, setCurrentPage, setModalQuestion } from '@/redux/slices/questionSlice';
 import { Button, Dropdown, Table } from 'antd'
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import {
     DeleteOutlined,
     EditOutlined,
-    MenuOutlined
+    MenuOutlined,
+    LockOutlined,
+    LockTwoTone
 } from '@ant-design/icons';
 import QuestionModal from '@/components/question/QuestionModal';
 import { questionService } from '@/services/questionService';
@@ -24,8 +26,8 @@ const initialData = {
     ],
 }
 
-const page = () => {
-    const { questions, loading } = useSelector((state) => state.question)
+const Page = () => {
+    const { questions, loading, current } = useSelector((state) => state.question)
     const dispatch = useDispatch();
     const [dataQuestion, setDataQuestion] = useState(initialData)
     const [isUpdate, setIsUpdate] = useState(false)
@@ -62,19 +64,23 @@ const page = () => {
             title: '',
             key: 'action',
             render: (_, record) => (
-                <Dropdown
-                    menu={{
-                        items,
-                        onClick: ({ key }) => {
-                            handleAction(key, record);
-                        }
-                    }}
-                    trigger={['click']}
-                >
-                    <a onClick={(e) => e.preventDefault()}>
-                        <MenuOutlined />
-                    </a>
-                </Dropdown>
+                record.is_editable && record.is_deletable ? (
+                    <Dropdown
+                        menu={{
+                            items,
+                            onClick: ({ key }) => {
+                                handleAction(key, record);
+                            }
+                        }}
+                        trigger={['click']}
+                    >
+                        <a onClick={(e) => e.preventDefault()}>
+                            <MenuOutlined />
+                        </a>
+                    </Dropdown>
+                ) : (
+                    <LockTwoTone twoToneColor="#FF0000" />
+                )
             ),
         },
     ];
@@ -94,7 +100,15 @@ const page = () => {
 
     const deleteQuestion = (id) => {
         questionService.deleteQuestion(id).then(() => {
-            handleGetQuestions(1, 10)
+            if (questions.total > 1) {
+                if ((current - 1) * 10 == questions.total - 1) {
+                    handleGetQuestions(current - 1, 10)
+                } else {
+                    handleGetQuestions(current, 10)
+                }
+            } else {
+                handleGetQuestions(1, 10)
+            }
         })
     }
 
@@ -136,6 +150,14 @@ const page = () => {
     }
 
     useEffect(() => {
+        const handleGetQuestions = async (page, size) => {
+            let params = {
+                page: page,
+                size: size
+            }
+            await dispatch(fetchGetQuestions(params))
+        }
+
         handleGetQuestions(1, 10)
     }, []);
 
@@ -152,6 +174,7 @@ const page = () => {
             size: size
         }
         dispatch(fetchGetQuestions(params))
+        dispatch(setCurrentPage(page))
     }
 
     return (
@@ -174,14 +197,16 @@ const page = () => {
                 rowKey={(record) => record.id}
                 pagination={{
                     pageSize: 10,
-                    // total: questions.total,
+                    total: questions.total,
                     onChange: (page) => {
                         handleGetQuestions(page, 10)
                     },
+                    current: current
                 }}
             />
         </div>
     )
 }
 
-export default page
+export default Page
+

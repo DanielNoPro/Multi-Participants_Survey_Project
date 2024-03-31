@@ -5,29 +5,28 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('authenticate', '0002_expiredtoken'),
+        ("authenticate", "0002_expiredtoken"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='ExpiredTokenProxy',
-            fields=[
-            ],
+            name="ExpiredTokenProxy",
+            fields=[],
             options={
-                'verbose_name': 'Token',
-                'abstract': False,
-                'proxy': True,
-                'indexes': [],
-                'constraints': [],
+                "verbose_name": "Token",
+                "abstract": False,
+                "proxy": True,
+                "indexes": [],
+                "constraints": [],
             },
-            bases=('authenticate.expiredtoken',),
+            bases=("authenticate.expiredtoken",),
         ),
         migrations.AlterModelOptions(
-            name='expiredtoken',
-            options={'verbose_name': 'Token', 'verbose_name_plural': 'Tokens'},
+            name="expiredtoken",
+            options={"verbose_name": "Token", "verbose_name_plural": "Tokens"},
         ),
         migrations.AlterModelOptions(
-            name='passwordlessuser',
-            options={'verbose_name': 'User', 'verbose_name_plural': 'Users'},
+            name="passwordlessuser",
+            options={"verbose_name": "User", "verbose_name_plural": "Users"},
         ),
     ]

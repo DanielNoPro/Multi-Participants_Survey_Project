@@ -1,6 +1,6 @@
 'use client'
-import React, { useState, useEffect, useRef } from 'react'
-import { Button, DatePicker, Dropdown, Input, message, Modal, Table } from 'antd';
+import React, { useState, useEffect } from 'react'
+import { Button, Dropdown, Input, message, Modal, Table } from 'antd';
 import {
     DeleteOutlined,
     EditOutlined,
@@ -9,17 +9,18 @@ import {
     MenuOutlined
 } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchCreateSurvey, fetchDeleteSurvey, fetchGetSurveys, setModalSurvey } from '@/redux/slices/surveySlice';
+import { fetchDeleteSurvey, fetchGetSurveys, setCurrentPage, setModalSurvey } from '@/redux/slices/surveySlice';
 import SurveyModal from '@/components/survey/SurveyModal';
 import { surveyService } from '@/services/surveyService';
 const { Search } = Input;
 import moment from 'moment';
 import { useRouter } from 'next/navigation';
-import { ReactMultiEmail, isEmail } from 'react-multi-email';
+import { ReactMultiEmail } from 'react-multi-email';
 import 'react-multi-email/dist/style.css';
+import styles from './styles.module.css'
 
 const SurveyPage = () => {
-    const { surveys, loadingSurvey } = useSelector((state) => state.survey)
+    const { surveys, loadingSurvey, current } = useSelector((state) => state.survey)
     const dispatch = useDispatch()
     const [dataSurvey, setDataSurvey] = useState({})
     const [isUpdate, setIsUpdate] = useState(false)
@@ -43,6 +44,24 @@ const SurveyPage = () => {
         dispatch(setModalSurvey(true))
         setIsUpdate(true)
     };
+
+    const deleteSurvey = async (id) => {
+        await dispatch(fetchDeleteSurvey(id))
+        if (surveys.total > 1) {
+            if ((current - 1) * 10 == surveys.total - 1) {
+                handleGetSurveys(current - 1)
+            } else {
+                handleGetSurveys(current)
+            }
+        } else {
+            handleGetSurveys(1)
+        }
+    };
+
+    const handleGetSurveys = (page) => {
+        dispatch(fetchGetSurveys(page))
+        dispatch(setCurrentPage(page))
+    }
 
     const items = [
         {
@@ -124,8 +143,7 @@ const SurveyPage = () => {
     const handleAction = (key, record) => {
         switch (key) {
             case "delete":
-                dispatch(fetchDeleteSurvey(record?.id))
-                    .then(() => dispatch(fetchGetSurveys(1)))
+                deleteSurvey(record?.id)
                 break;
             case "edit":
                 editSurvey(record?.id)
@@ -149,7 +167,7 @@ const SurveyPage = () => {
     }
 
     useEffect(() => {
-        dispatch(fetchGetSurveys(1))
+        dispatch(fetchGetSurveys(current))
     }, []);
 
     const handleOpenSendModal = (id) => {
@@ -166,7 +184,7 @@ const SurveyPage = () => {
     };
 
     const handleSend = () => {
-        emails.forEach( async element => {
+        emails.forEach(async element => {
             const res = await surveyService.sendSurvey({
                 email: element,
                 tenant: 1,
@@ -195,6 +213,7 @@ const SurveyPage = () => {
                 columns={columns}
                 dataSource={surveys.data}
                 rowKey={(record) => record.id}
+                rowClassName={styles.row}
                 onRow={(record, rowIndex) => {
                     return {
                         onClick: (event) => {
@@ -204,16 +223,19 @@ const SurveyPage = () => {
                 }}
                 pagination={{
                     pageSize: 10,
-                    // total: surveys.total,
+                    total: surveys.total,
                     onChange: (page) => {
                         dispatch(fetchGetSurveys(page))
+                        dispatch(setCurrentPage(page))
                     },
+                    current: current
                 }}
             />
+            {contextHolder}
             <Modal open={sendModal} closeIcon={null} destroyOnClose={true}
                 footer={[
                     <Button key="back" onClick={handleCancelSend}>
-                        Cancel
+                        Close
                     </Button>,
                     <Button key="submit" type="primary" onClick={handleSend}>
                         Send Invitation

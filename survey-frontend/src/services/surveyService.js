@@ -41,8 +41,47 @@ export const surveyService = {
         return api.post(`/api/v1/survey/email`, data)
     },
 
-    getSurveyStatistics(id){
-        return api.get(`api/v1/surveys/${id}/statistics`)
-    }
+    getSurveyStatistics(id, page, page_size) {
+        return api.get(`api/v1/surveys/${id}/statistics/?page=${page}&page_size=${page_size}`)
+    },
 
+    getSurveyParticipants(id, page) {
+        return api.get(`api/v1/surveys/${id}/participants/?page=${page}&page_size=10`)
+    },
+
+    activateSurvey(id){
+        return api.patch(`api/v1/participants/${id}/activate/`)
+    },
+
+    deactivateSurvey(id){
+        return api.patch(`api/v1/participants/${id}/deactivate/`)
+    },
+
+    createQuestionSet(survey_id, data){
+        return api.post(`/api/v1/surveys/${survey_id}/sets/`, data)
+    },
+
+    getQuestionSets(survey_id, page, size){
+        return api.get(`/api/v1/surveys/${survey_id}/sets/?page=${page}&page_size=${size}`)
+    },
+
+    deleteQuestionSet(survey_id, set_id){
+        return api.delete(`/api/v1/surveys/${survey_id}/sets/${set_id}/`)
+    },
+
+    getSetPreConditions(survey_id, set_id){
+        return api.get(`/api/v1/surveys/${survey_id}/sets/${set_id}/condition/?page=1&page_size=99`)
+    },
+
+    createSetPreConditions(survey_id, set_id, data){
+        return api.post(`/api/v1/surveys/${survey_id}/sets/${set_id}/condition/`, data)
+    },
+    
+    deleteSetPreCondition(survey_id, set_id, condition_id){
+        return api.delete(`/api/v1/surveys/${survey_id}/sets/${set_id}/condition/${condition_id}`)
+    },
+
+    getNextSet(survey_id, set_id, data){
+        return api.post(`/api/v1/surveys/${survey_id}/sets/${set_id}/surveys/next/`, data)
+    }
 }

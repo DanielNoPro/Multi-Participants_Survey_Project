@@ -6,14 +6,15 @@
     font-size: 20px;
     margin-bottom: 15px;
 }
-  
+
 .antCheckbox {
     margin-left: 20px;
 }
 
 .submit_section {
-    position: absolute;
+    position: fixed;
     width: 300px;
     left: 77%;
     top: 10%;
 }
+

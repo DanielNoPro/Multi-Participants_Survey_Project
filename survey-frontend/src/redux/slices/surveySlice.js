@@ -52,21 +52,46 @@ export const fetchGetSurveyQuestions = createAsyncThunk(
 
 export const fetchGetUserSurveyQuestions = createAsyncThunk(
     'survey/getUserSurveyQuestions',
-    async (data) => {
+    async (data, {rejectWithValue}) => {
         return apiUser.post('/api/v1/token/redirect', data)
             .then((response) => {
                 return response.data
             })
             .catch((err) => {
-                console.log(err);
+                throw rejectWithValue(err.response.data.detail)
             });
     }
 )
 
 export const fetchGetSurveyStatistics = createAsyncThunk(
     'survey/getSurveyStatistics',
-    async (id) => {
-        const res = await surveyService.getSurveyStatistics(id);
+    async (data) => {
+        const res = await surveyService.getSurveyStatistics(data.id, data.page, data.page_size);
+        return res;
+    }
+);
+
+export const fetchGetSurveyParticipants = createAsyncThunk(
+    'survey/getSurveyParticipants',
+    async (data) => {
+        const res = await surveyService.getSurveyParticipants(data.id, data.page);
+        return res;
+    }
+);
+
+
+export const fetchGetQuestionSets = createAsyncThunk(
+    'survey/getQuestionSets',
+    async (params) => {
+        const res = await surveyService.getQuestionSets(params.id, params.page, params.size);
+        return res;
+    }
+);
+
+export const fetchGetSetPreConditions = createAsyncThunk(
+    'survey/getSetPreConditions',
+    async (params) => {
+        const res = await surveyService.getSetPreConditions(params.survey_id, params.set_id);
         return res;
     }
 );
@@ -80,11 +105,22 @@ const surveySlice = createSlice({
         surveyDetail: {},
         surveyQuestions: [],
         userSurvey: {},
-        statistics: []
+        statistics: [],
+        participants: {},
+        current: 1,
+        sets: {},
+        setConditions: [],
+        surveyErrors: ""
     },
     reducers: {
         setModalSurvey(state, { payload }) {
             state.modalSurvey = payload;
+        },
+        setCurrentPage(state, { payload }) {
+            state.current = payload;
+        },
+        updateUserSurvey(state, { payload }) {
+            state.userSurvey = payload;
         },
     },
     extraReducers: (builder) => {
@@ -135,6 +171,11 @@ const surveySlice = createSlice({
                     state.userSurvey = action.payload
                     state.loadingSurvey = false
                 }
+            )
+            .addCase(
+                fetchGetUserSurveyQuestions.rejected, (state, action) => {
+                    state.surveyErrors = action.payload
+                }
             );
         builder
             .addCase(
@@ -144,16 +185,42 @@ const surveySlice = createSlice({
             )
             .addCase(
                 fetchGetSurveyStatistics.fulfilled, (state, action) => {
-                    state.statistics = action.payload.data
+                    state.statistics = action.payload
                     state.loadingSurvey = false
                 }
             );
+        builder
+            .addCase(
+                fetchGetSurveyParticipants.pending, (state, action) => {
+                    state.loadingSurvey = true
+                }
+            )
+            .addCase(
+                fetchGetSurveyParticipants.fulfilled, (state, action) => {
+                    state.participants = action.payload
+                    state.loadingSurvey = false
+                }
+            );
+        builder
+            .addCase(
+                fetchGetQuestionSets.fulfilled, (state, action) => {
+                    state.sets = action.payload
+                }
+            );
+        builder
+            .addCase(
+                fetchGetSetPreConditions.fulfilled, (state, action) => {
+                    state.setConditions = action.payload.data
+                }
+            )
     },
 });
 
 const { reducer, actions } = surveySlice;
 export const {
     setModalSurvey,
+    setCurrentPage,
+    updateUserSurvey
 } = actions;
 
 export default reducer;

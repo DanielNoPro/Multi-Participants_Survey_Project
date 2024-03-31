@@ -9,7 +9,7 @@ class Service(models.Model):
     @classmethod
     def get_default_pk(cls):
         entity, created = cls.objects.get_or_create(
-            name='Master Service',
+            name="Master Service",
             defaults=dict(is_active=True),
         )
         return entity.pk
@@ -27,8 +27,8 @@ class Tenant(models.Model):
     @classmethod
     def get_default_pk(cls):
         entity, created = cls.objects.get_or_create(
-            name='Default Tenant',
-            defaults=dict(subdomain_prefix='*', is_active=True),
+            name="Default Tenant",
+            defaults=dict(subdomain_prefix="*", is_active=True),
         )
         return entity.pk
 
@@ -38,14 +38,18 @@ class Tenant(models.Model):
 
 
 class ServiceAwareModel(models.Model):
-    service = models.ForeignKey(Service, on_delete=models.CASCADE, default=Service.get_default_pk)
+    service = models.ForeignKey(
+        Service, on_delete=models.CASCADE, default=Service.get_default_pk
+    )
 
     class Meta:
         abstract = True
 
 
 class TenantAwareModel(models.Model):
-    tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE, default=Tenant.get_default_pk)
+    tenant = models.ForeignKey(
+        Tenant, on_delete=models.CASCADE, default=Tenant.get_default_pk
+    )
 
     class Meta:
         abstract = True
@@ -59,7 +63,7 @@ class Unit(TenantAwareModel):
     @classmethod
     def get_default_pk(cls):
         entity, created = cls.objects.get_or_create(
-            name='Default Unit',
+            name="Default Unit",
             defaults=dict(is_active=True),
         )
         return entity.pk
@@ -67,11 +71,13 @@ class Unit(TenantAwareModel):
     class Meta:
         verbose_name = "Unit"
         verbose_name_plural = "Units"
-        unique_together = (('name', 'tenant'),)
+        unique_together = (("name", "tenant"),)
 
 
 class UnitAwareModel(TenantAwareModel):
-    unit = models.ForeignKey(Unit, on_delete=models.CASCADE, default=Unit.get_default_pk)
+    unit = models.ForeignKey(
+        Unit, on_delete=models.CASCADE, default=Unit.get_default_pk
+    )
 
     class Meta:
         abstract = True
@@ -85,4 +91,4 @@ class Configuration(UnitAwareModel, ServiceAwareModel):
     class Meta:
         verbose_name = "Config"
         verbose_name_plural = "Configs"
-        unique_together = (('name', 'service', 'tenant', 'unit'),)
+        unique_together = (("name", "service", "tenant", "unit"),)

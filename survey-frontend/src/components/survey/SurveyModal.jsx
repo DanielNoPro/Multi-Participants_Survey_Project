@@ -1,6 +1,6 @@
 'use client'
 import { fetchCreateSurvey, fetchGetSurveys, fetchUpdateSurvey, setModalSurvey } from '@/redux/slices/surveySlice';
-import { Button, Form, Input, Modal, DatePicker, Space } from 'antd';
+import { Button, Form, Input, Modal, DatePicker, Space, message } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 const { RangePicker } = DatePicker;
 import React, { useEffect, useState } from 'react'
@@ -10,7 +10,8 @@ import dayjs from 'dayjs';
 
 const SurveyModal = ({ data, setData, isUpdate }) => {
     const dispatch = useDispatch()
-    const modalSurvey = useSelector((state) => state.survey.modalSurvey)
+    const {modalSurvey, current} = useSelector((state) => state.survey)
+    const [messageApi, contextHolder] = message.useMessage();
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -39,7 +40,7 @@ const SurveyModal = ({ data, setData, isUpdate }) => {
         setData({})
     };
 
-    const handleCreate = () => {
+    const handleCreate = async () => {
         let formData = {
             title: data.title,
             description: data.description,
@@ -48,10 +49,22 @@ const SurveyModal = ({ data, setData, isUpdate }) => {
             is_active: true,
             survey_questions: []
         }
-        dispatch(fetchCreateSurvey(formData)).then(() => {
-            dispatch(fetchGetSurveys(1));
-        });
-        dispatch(setModalSurvey(false))
+        // dispatch(fetchCreateSurvey(formData)).then(() => {
+        //     dispatch(fetchGetSurveys(1));
+        // });
+        // dispatch(setModalSurvey(false))
+        try {
+            const res = await surveyService.createSurvey(formData);
+            if (res) {
+                dispatch(fetchGetSurveys(current));
+                dispatch(setModalSurvey(false))
+            }
+        } catch (error) {
+            messageApi.open({
+                type: 'error',
+                content: error.response.data.end_date,
+            });
+        }
     };
 
     const handleUpdate = async () => {
@@ -63,10 +76,17 @@ const SurveyModal = ({ data, setData, isUpdate }) => {
             is_active: true,
             survey_questions: []
         }
-        const res = await surveyService.updateSurvey(data.id, formData)
-        if (res) {
-            dispatch(fetchGetSurveys(1));
-            dispatch(setModalSurvey(false))
+        try {
+            const res = await surveyService.updateSurvey(data.id, formData)
+            if (res) {
+                dispatch(fetchGetSurveys(current));
+                dispatch(setModalSurvey(false))
+            }
+        } catch (error) {
+            messageApi.open({
+                type: 'error',
+                content: error.response.data.end_date,
+            });
         }
     }
 
@@ -74,13 +94,14 @@ const SurveyModal = ({ data, setData, isUpdate }) => {
         <Modal open={modalSurvey} closeIcon={null} destroyOnClose={true}
             footer={[
                 <Button key="back" onClick={handleCancel}>
-                    Cancel
+                    Close
                 </Button>,
                 <Button key="submit" type="primary" onClick={isUpdate ? handleUpdate : handleCreate}>
                     {isUpdate ? 'Update' : 'Create'}
                 </Button>,
             ]}
         >
+            {contextHolder}
             <div style={{ textAlign: 'center', marginBottom: '10px', fontSize: '20px' }}>
                 {isUpdate
                     ? <p>

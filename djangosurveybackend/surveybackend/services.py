@@ -6,14 +6,14 @@ from django.utils.html import strip_tags
 
 class TemplateEmail:
     def __init__(
-            self,
-            to,
-            subject,
-            template,
-            context,
-            from_email,
-            reply_to,
-            **email_kwargs,
+        self,
+        to,
+        subject,
+        template,
+        context,
+        from_email,
+        reply_to,
+        **email_kwargs,
     ):
         self.to = to
         self.subject = subject
@@ -71,14 +71,13 @@ class TemplateEmail:
 
 
 class MailService:
-
     def __init__(
-            self,
-            host,
-            port,
-            username,
-            password,
-            use_tls,
+        self,
+        host,
+        port,
+        username,
+        password,
+        use_tls,
     ):
         self._host = host
         self._port = port
@@ -87,7 +86,19 @@ class MailService:
         self._use_tls = use_tls
 
     def send(self, to, subject, template, context, from_email, reply_to):
-        with get_connection(host=self._host, port=self._port, username=self._username, password=self._password,
-                            use_tls=self._use_tls) as connection:
-            return TemplateEmail(to=to, subject=subject, template=template, context=context, from_email=from_email,
-                                 reply_to=reply_to, connection=connection).send()
+        with get_connection(
+            host=self._host,
+            port=self._port,
+            username=self._username,
+            password=self._password,
+            use_tls=self._use_tls,
+        ) as connection:
+            return TemplateEmail(
+                to=to,
+                subject=subject,
+                template=template,
+                context=context,
+                from_email=from_email,
+                reply_to=reply_to,
+                connection=connection,
+            ).send()

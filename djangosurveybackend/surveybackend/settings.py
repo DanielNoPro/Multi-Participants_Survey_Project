@@ -15,37 +15,45 @@ from pathlib import Path
 
 import structlog
 
-import surveybackend
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+os.makedirs(os.path.join(BASE_DIR, "logs"), exist_ok=True)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv("SECRET_KEY", 'django-insecure-p4z8wc%#0t5lgc1pl!!5r^9u#-on8g5kfw3a=9&*i5*^6c+@p^')
+SECRET_KEY = os.getenv(
+    "SECRET_KEY", "django-insecure-p4z8wc%#0t5lgc1pl!!5r^9u#-on8g5kfw3a=9&*i5*^6c+@p^"
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(os.getenv("DEBUG_MODE", "True"))
 
-AUTH_USER_MODEL = 'authenticate.PasswordlessUser'
+AUTH_USER_MODEL = "authenticate.PasswordlessUser"
 
-AUTH_USER_MODEL_MODULE = 'authenticate.models.PasswordlessUser'
+AUTH_USER_MODEL_MODULE = "authenticate.models.PasswordlessUser"
 
 ALLOWED_HOSTS = ["*"]
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000"
-]
+CORS_ALLOW_ALL_ORIGINS = bool(os.getenv("CORS_ALLOW_ALL_ORIGINS", "True"))
+
+CSRF_TRUSTED_ORIGINS = ["*"]
+
+# SUPER USER
+DJANGO_SUPERUSER_EMAIL = os.getenv("DJANGO_SUPERUSER_EMAIL", "admin@gmail.com")
+DJANGO_SUPERUSER_PASSWORD = os.getenv("DJANGO_SUPERUSER_PASSWORD", "admin")
+DJANGO_SUPERUSER_USERNAME = os.getenv("DJANGO_SUPERUSER_USERNAME", "admin")
+DJANGO_SUPERUSER_PHONE_NUMBER = os.getenv("DJANGO_SUPERUSER_PHONE_NUMBER", "0123456789")
 
 # EMAIL CONFIG
-DEFAULT_FROM_EMAIL = 'admin@survey.com'
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = os.getenv('EMAIL_HOST', 'smtp.gmail.com')
-EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', 'nhanphamquangx196@gmail.com')
-EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASS', 'xltfqysmrinwojpd')
-EMAIL_PORT = int(os.getenv('EMAIL_PORT', '587'))
+DEFAULT_FROM_EMAIL = "admin@survey.com"
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = os.getenv("EMAIL_HOST", "smtp.gmail.com")
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", "nhanphamquangx196@gmail.com")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASS", "xltfqysmrinwojpd")
+EMAIL_PORT = int(os.getenv("EMAIL_PORT", "587"))
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 
@@ -61,7 +69,9 @@ LOGGING = {
         },
         "key_value": {
             "()": structlog.stdlib.ProcessorFormatter,
-            "processor": structlog.processors.KeyValueRenderer(key_order=['timestamp', 'level', 'event', 'logger']),
+            "processor": structlog.processors.KeyValueRenderer(
+                key_order=["timestamp", "level", "event", "logger"]
+            ),
         },
     },
     "handlers": {
@@ -89,7 +99,7 @@ LOGGING = {
             "level": os.getenv("DJANGO_LOG_LEVEL", "INFO"),
             "propagate": False,
         },
-    }
+    },
 }
 
 structlog.configure(
@@ -110,94 +120,91 @@ structlog.configure(
 )
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
+    "jazzmin",
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
     # Django REST framework
-    'rest_framework',
-    'rest_framework_simplejwt',
-    'rest_framework.authtoken',
+    "rest_framework",
+    "rest_framework_simplejwt",
+    "rest_framework.authtoken",
     # Swagger
-    'rest_framework_swagger',
+    "rest_framework_swagger",
     # CORS
-    'corsheaders',
+    "corsheaders",
     # Yet Another Swagger generator
-    'drf_spectacular',
-    'drf_spectacular_sidecar',
+    "drf_spectacular",
+    "drf_spectacular_sidecar",
     # Application survey
-    'surveys.apps.SurveysConfig',
-    'authenticate',
-    'tenant',
-
+    "surveys.apps.SurveysConfig",
+    "authenticate",
+    "tenant",
     # Passwordless
-    'drfpasswordless',
-
+    "drfpasswordless",
     # Logging
     "log_viewer",
     "django_structlog",
-
     # Task Scheduler
     "django_apscheduler",
-
-    'health_check',
-    'health_check.db',
-    'health_check.cache',
-    'health_check.storage',
-    'health_check.contrib.migrations',
+    "health_check",
+    "health_check.db",
+    "health_check.cache",
+    "health_check.storage",
+    "health_check.contrib.migrations",
 ]
 
 REST_FRAMEWORK = {
-    'DEFAULT_RENDERER_CLASSES': [
+    "DEFAULT_RENDERER_CLASSES": [
         "rest_framework.renderers.JSONRenderer",
     ],
-    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
-    'DEFAULT_PAGINATION_CLASS': 'core.pagination.pagination.BaseResultsSetPagination',
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.BasicAuthentication',
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-        'authenticate.authentication.ExpiringTokenAuthentication'
-    ]
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    "DEFAULT_PAGINATION_CLASS": "core.pagination.pagination.BaseResultsSetPagination",
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.BasicAuthentication",
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+        "authenticate.authentication.ExpiringTokenAuthentication",
+    ],
 }
 
 PASSWORDLESS_AUTH = {
-    'PASSWORDLESS_AUTH_TYPES': ['EMAIL'],
-    'PASSWORDLESS_EMAIL_NOREPLY_ADDRESS': 'noreply@survey.com',
-    'PASSWORDLESS_AUTH_TOKEN_CREATOR': 'authenticate.authentication.create_authentication_token',
-    'PASSWORDLESS_EMAIL_CALLBACK': 'authenticate.authentication.send_email_with_callback_magic_link',
-    'PASSWORDLESS_AUTH_TOKEN_SERIALIZER': 'drfpasswordless.serializers.TokenResponseSerializer',
-    'PASSWORDLESS_TOKEN_EXPIRE_TIME': 24 * 60 * 60,
-    'PASSWORDLESS_EMAIL_TOKEN_HTML_TEMPLATE_NAME': "surveys/survey_magic_link.html",
+    "PASSWORDLESS_EMAIL_SUBJECT": "Survey Invitation",
+    "PASSWORDLESS_AUTH_TYPES": ["EMAIL"],
+    "PASSWORDLESS_EMAIL_NOREPLY_ADDRESS": "noreply@survey.com",
+    "PASSWORDLESS_AUTH_TOKEN_CREATOR": "authenticate.authentication.create_authentication_token",
+    "PASSWORDLESS_EMAIL_CALLBACK": "authenticate.authentication.send_email_with_callback_magic_link",
+    "PASSWORDLESS_AUTH_TOKEN_SERIALIZER": "drfpasswordless.serializers.TokenResponseSerializer",
+    "PASSWORDLESS_TOKEN_EXPIRE_TIME": 24 * 60 * 60,
+    "PASSWORDLESS_EMAIL_TOKEN_HTML_TEMPLATE_NAME": "surveys/survey_magic_link.html",
 }
 
 SPECTACULAR_SETTINGS = {
-    'TITLE': 'Survey Project API',
-    'DESCRIPTION': 'Survey Project API description',
-    'VERSION': '1.0.0',
-    'SERVE_INCLUDE_SCHEMA': False,
-    'SERVE_PERMISSIONS': ['rest_framework.permissions.AllowAny'],
-    'SCHEMA_PATH_PREFIX': r'/api/v[0-9]',
+    "TITLE": "Survey Project API",
+    "DESCRIPTION": "Survey Project API description",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+    "SERVE_PERMISSIONS": ["rest_framework.permissions.AllowAny"],
+    "SCHEMA_PATH_PREFIX": r"/api/v[0-9]",
     # OTHER SETTINGS
 }
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "django.middleware.security.SecurityMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
     # CORS
-    'corsheaders.middleware.CorsMiddleware',
-    'django.middleware.common.CommonMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
     # Logging
-    'django_structlog.middlewares.RequestMiddleware',
+    "django_structlog.middlewares.RequestMiddleware",
 ]
 
-ROOT_URLCONF = 'surveybackend.urls'
+ROOT_URLCONF = "surveybackend.urls"
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(hours=1),
@@ -206,34 +213,33 @@ SIMPLE_JWT = {
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates']
-        ,
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [BASE_DIR / "templates"],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
             ],
         },
     },
 ]
 
-WSGI_APPLICATION = 'surveybackend.wsgi.application'
+WSGI_APPLICATION = "surveybackend.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv("DB_NAME", 'survey'),
-        'USER': os.getenv("DB_USER", 'postgres'),
-        'PASSWORD': os.getenv("DB_PASS", 'postgres'),
-        'HOST': os.getenv("DB_HOST", '127.0.0.1'),
-        'PORT': os.getenv("DB_PORT", '54321'),
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.getenv("DB_NAME", "survey"),
+        "USER": os.getenv("DB_USER", "postgres"),
+        "PASSWORD": os.getenv("DB_PASS", "postgres"),
+        "HOST": os.getenv("DB_HOST", "127.0.0.1"),
+        "PORT": os.getenv("DB_PORT", "54321"),
     }
 }
 
@@ -241,11 +247,11 @@ DATABASES = {
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": os.getenv("REDIS_HOST", "redis://:eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81@127.0.0.1:16379"),
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient"
-        },
-        "KEY_PREFIX": "survey_"
+        "LOCATION": os.getenv(
+            "REDIS_HOST", "redis://:eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81@127.0.0.1:16379"
+        ),
+        "OPTIONS": {"CLIENT_CLASS": "django_redis.client.DefaultClient"},
+        "KEY_PREFIX": "survey_",
     }
 }
 
@@ -256,25 +262,25 @@ CACHE_TTL = 60 * 15
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = "Asia/Bangkok"
 
 USE_I18N = True
 
@@ -285,32 +291,36 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
-STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(os.path.dirname(__file__), 'static/')
+STATIC_URL = "/static/"
+STATIC_ROOT = os.path.join(os.path.dirname(__file__), "static/")
 FIXTURE_DIRS = BASE_DIR / "fixtures"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Invitation
 REMINDER_SURVEY_INTERVAL = timedelta(hours=24)
-SURVEY_SENDER = PASSWORDLESS_AUTH['PASSWORDLESS_EMAIL_NOREPLY_ADDRESS']
-SURVEY_SUBJECT = 'Reminder for survey'
-SURVEY_TEMPLATE = 'survey_invitation'
-PASSWORDLESS_AUTH_LINK_CREATOR = 'surveys.utils.create_survey_auth_link'
-PASSWORDLESS_AUTH_CLAIM_CREATOR = 'surveys.utils.create_auth_claim'
+SURVEY_SENDER = PASSWORDLESS_AUTH["PASSWORDLESS_EMAIL_NOREPLY_ADDRESS"]
+SURVEY_SUBJECT = "Reminder for survey"
+SURVEY_TEMPLATE = "survey_invitation"
+PASSWORDLESS_AUTH_LINK_CREATOR = "surveys.utils.create_survey_auth_link"
+PASSWORDLESS_AUTH_CLAIM_CREATOR = "surveys.utils.create_auth_claim"
 
 # LOG Config
-LOG_VIEWER_FILES = ['app.log']
-LOG_VIEWER_FILES_PATTERN = 'app.log*'
-LOG_VIEWER_FILES_DIR = 'logs/'
+LOG_VIEWER_FILES = ["app.log"]
+LOG_VIEWER_FILES_PATTERN = "app.log*"
+LOG_VIEWER_FILES_DIR = "logs/"
 LOG_VIEWER_PAGE_LENGTH = 25  # total log lines per-page
 LOG_VIEWER_MAX_READ_LINES = 1000  # total log lines will be read
-LOG_VIEWER_FILE_LIST_MAX_ITEMS_PER_PAGE = 25  # Max log files loaded in Datatable per page
-LOG_VIEWER_PATTERNS = ['timestamp']
-LOG_VIEWER_EXCLUDE_TEXT_PATTERN = None  # String regex expression to exclude the log from line
+LOG_VIEWER_FILE_LIST_MAX_ITEMS_PER_PAGE = (
+    25  # Max log files loaded in Datatable per page
+)
+LOG_VIEWER_PATTERNS = ["timestamp"]
+LOG_VIEWER_EXCLUDE_TEXT_PATTERN = (
+    None  # String regex expression to exclude the log from line
+)
 
 # Optionally you can set the next variables in order to customize the admin:
 LOG_VIEWER_FILE_LIST_TITLE = "Survey Service Logging"
@@ -322,9 +332,7 @@ SCHEDULER_CONFIG = {
     "apscheduler.jobstores.default": {
         "class": "django_apscheduler.jobstores:DjangoJobStore"
     },
-    'apscheduler.executors.processpool': {
-        "type": "threadpool"
-    },
-    'timezone': TIME_ZONE
+    "apscheduler.executors.processpool": {"type": "threadpool"},
+    "timezone": TIME_ZONE,
 }
 SCHEDULER_AUTOSTART = True

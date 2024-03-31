@@ -8,50 +8,59 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('surveys', '0002_auto_20231221_2108'),
+        ("surveys", "0002_auto_20231221_2108"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='answer',
-            options={'ordering': ('-answered_at',)},
+            name="answer",
+            options={"ordering": ("-answered_at",)},
         ),
         migrations.AlterModelOptions(
-            name='participantsurvey',
-            options={'ordering': ('-participant_joined_at',)},
+            name="participantsurvey",
+            options={"ordering": ("-participant_joined_at",)},
         ),
         migrations.AlterModelOptions(
-            name='surveyquestion',
-            options={'ordering': ('-asked_at',)},
+            name="surveyquestion",
+            options={"ordering": ("-asked_at",)},
         ),
         migrations.AlterField(
-            model_name='question',
-            name='question_created_by',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='question_created_by',
-                                    to=settings.AUTH_USER_MODEL),
+            model_name="question",
+            name="question_created_by",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="question_created_by",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
         migrations.AlterField(
-            model_name='question',
-            name='question_type',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='question_type',
-                                    to='surveys.questiontype'),
+            model_name="question",
+            name="question_type",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="question_type",
+                to="surveys.questiontype",
+            ),
         ),
         migrations.AlterField(
-            model_name='questionoption',
-            name='question',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='options',
-                                    to='surveys.question'),
+            model_name="questionoption",
+            name="question",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="options",
+                to="surveys.question",
+            ),
         ),
         migrations.AlterUniqueTogether(
-            name='answer',
-            unique_together={('question', 'survey', 'option', 'answered_by')},
+            name="answer",
+            unique_together={("question", "survey", "option", "answered_by")},
         ),
         migrations.AlterUniqueTogether(
-            name='participantsurvey',
-            unique_together={('participant', 'survey')},
+            name="participantsurvey",
+            unique_together={("participant", "survey")},
         ),
         migrations.AlterUniqueTogether(
-            name='surveyquestion',
-            unique_together={('question', 'survey', 'asked_by')},
+            name="surveyquestion",
+            unique_together={("question", "survey", "asked_by")},
         ),
     ]

@@ -43,5 +43,13 @@ export const questionService = {
 
     createQuestionOption(question_id, data) {
         return api.post(`/api/v1/questions/${question_id}/options/`, data)
+    },
+
+    addQuestionToSet(survey_id, set_id, data){
+        return api.post(`/api/v1/surveys/${survey_id}/sets/${set_id}/questions/`, data)
+    },
+
+    removeQuestionFromSet(survey_id, set_id, question_id){
+        return api.delete(`/api/v1/surveys/${survey_id}/sets/${set_id}/questions/${question_id}/`)
     }
 }

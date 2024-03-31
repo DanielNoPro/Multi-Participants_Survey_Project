@@ -1,53 +1,65 @@
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import Group
 from django.db import transaction
 from django.utils.module_loading import import_string
+from django.utils.translation import gettext_lazy as _
 from drfpasswordless.serializers import EmailAuthSerializer
 from drfpasswordless.settings import api_settings
 from rest_framework import serializers
 from rest_framework_simplejwt.backends import TokenBackend
 
 from core.serializer.validators import remove_non_updatable
-from surveys.models import Survey, Question, QuestionOption, ParticipantSurvey, SurveyQuestion, Answer, QuestionType
-from tenant.models import Tenant, Service, Unit, Configuration
+from surveys.models import (
+    Answer,
+    ParticipantSurvey,
+    Question,
+    QuestionOption,
+    QuestionType,
+    Survey,
+    SurveyQuestion,
+    SurveySubmit,
+    SurveyQuestionCondition,
+    SurveyQuestionSet,
+)
+from surveys.validator import DateBeforeValidator
+from tenant.models import Configuration, Service, Tenant, Unit
 
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = import_string(settings.AUTH_USER_MODEL_MODULE)
-        fields = '__all__'
+        fields = "__all__"
 
 
 class NestedParticipantSerializer(serializers.ModelSerializer):
     class Meta:
         model = import_string(settings.AUTH_USER_MODEL_MODULE)
-        fields = ['id', 'username', 'email', 'is_active']
+        fields = ["id", "username", "email", "is_active"]
 
 
 class GroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = Group
-        fields = '__all__'
+        fields = "__all__"
 
 
 class QuestionTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = QuestionType
-        fields = '__all__'
+        fields = "__all__"
 
 
 class QuestionOptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = QuestionOption
-        fields = '__all__'
+        fields = "__all__"
 
 
 class NestedQuestionOptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = QuestionOption
-        fields = ['id', 'content', 'is_active']
+        fields = ["id", "content", "is_active"]
 
 
 class NestedQuestionSerializer(serializers.ModelSerializer):
@@ -56,13 +68,21 @@ class NestedQuestionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Question
-        fields = ['id', 'content', 'question_type', 'options', 'is_active']
+        fields = [
+            "id",
+            "content",
+            "question_type",
+            "options",
+            "is_editable",
+            "is_deletable",
+            "is_active",
+        ]
 
 
 class SimpleNestedQuestionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Question
-        fields = ['id', 'content']
+        fields = ["id", "content"]
 
 
 class QuestionSerializer(serializers.ModelSerializer):
@@ -70,16 +90,16 @@ class QuestionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Question
-        fields = '__all__'
-        non_updatable_fields = ['options', 'question_created_by', 'question_created_at']
+        fields = "__all__"
+        non_updatable_fields = ["options", "question_created_by", "question_created_at"]
 
     @transaction.atomic
     def create(self, validated_data):
-        options = validated_data.pop('options')
+        options = validated_data.pop("options")
         question = super().create(validated_data)
         for option in options:
-            option['question'] = question
-        self.fields['options'].create(options)
+            option["question"] = question
+        self.fields["options"].create(options)
         return question
 
     @transaction.atomic
@@ -91,37 +111,88 @@ class QuestionSerializer(serializers.ModelSerializer):
 class PartitionSurveySerializer(serializers.ModelSerializer):
     class Meta:
         model = ParticipantSurvey
-        fields = '__all__'
+        fields = "__all__"
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
-        data['participant'] = NestedParticipantSerializer(instance.participant, many=False).data
+        data["participant"] = NestedParticipantSerializer(
+            instance.participant, many=False
+        ).data
+        data["submit_count"] = SurveySubmit.objects.filter(
+            survey=instance.survey, submitted_by=instance.participant
+        ).count()
         return data
+
+
+class CreateSurveyQuestionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SurveyQuestion
+        fields = ["question"]
 
 
 class SurveyQuestionSerializer(serializers.ModelSerializer):
     class Meta:
         model = SurveyQuestion
-        fields = '__all__'
+        fields = "__all__"
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
         data["survey"] = SurveySerializer(instance.survey, many=False).data
-        data['question'] = NestedQuestionSerializer(instance.question, many=False).data
-        data['asked_by'] = NestedParticipantSerializer(instance.asked_by, many=False).data
+        data["question"] = NestedQuestionSerializer(instance.question, many=False).data
+        data["asked_by"] = NestedParticipantSerializer(
+            instance.asked_by, many=False
+        ).data
         return data
 
 
 class CustomSurveyQuestionSerializer(serializers.ModelSerializer):
     class Meta:
         model = SurveyQuestion
-        fields = ['question', 'is_active']
+        fields = ["question", "is_active"]
 
 
 class NestedSurveySerializer(serializers.ModelSerializer):
     class Meta:
         model = Survey
-        fields = ['id', 'title', 'start_date', 'end_date', 'is_active']
+        fields = ["id", "title", "start_date", "end_date", "is_active"]
+
+
+class SurveyQuestionConditionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SurveyQuestionCondition
+        fields = "__all__"
+
+
+class CreateSurveyQuestionConditionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SurveyQuestionCondition
+        fields = ["logical_operator", "survey_question", "value", "operator"]
+
+
+class NestedSurveyQuestionSerializer(serializers.ModelSerializer):
+    question = NestedQuestionSerializer(many=False, read_only=True)
+
+    class Meta:
+        model = SurveyQuestion
+        fields = ["id", "set", "question"]
+
+
+class SurveyQuestionSetSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SurveyQuestionSet
+        fields = "__all__"
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data["survey_question"] = NestedSurveyQuestionSerializer(
+            SurveyQuestion.objects.filter(survey=instance.survey, set=instance).all(),
+            many=True,
+        ).data
+        data["condition"] = SurveyQuestionConditionSerializer(
+            SurveyQuestionCondition.objects.filter(set=instance).all(), many=True
+        ).data
+        data["survey"] = NestedSurveySerializer(instance.survey, many=False).data
+        return data
 
 
 class SurveySerializer(serializers.ModelSerializer):
@@ -129,29 +200,58 @@ class SurveySerializer(serializers.ModelSerializer):
     participant = NestedParticipantSerializer(many=True, read_only=True)
     survey_questions = CustomSurveyQuestionSerializer(many=True, required=False)
 
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data["question_sets"] = filter(
+            lambda question_set: len(question_set["condition"]) == 0,
+            SurveyQuestionSetSerializer(
+                SurveyQuestionSet.objects.filter(survey=instance).all(), many=True
+            ).data,
+        )
+        return data
+
     class Meta:
         model = Survey
-        fields = '__all__'
-        non_updatable_fields = ['questions', 'survey_questions', 'participant']
+        validators = [DateBeforeValidator]
+        fields = "__all__"
+        non_updatable_fields = ["questions", "survey_questions", "participant"]
 
     @transaction.atomic
     def create(self, validated_data):
-        request = self.context.get('request', None)
-        token = request.META.get('HTTP_AUTHORIZATION', " ").split(' ')[1]
-        valid_data = TokenBackend(algorithm='HS256').decode(token, verify=False)
-        user_id = valid_data['user_id']
-        survey_questions = validated_data.pop('survey_questions')
+        request = self.context.get("request", None)
+        token = request.META.get("HTTP_AUTHORIZATION", " ").split(" ")[1]
+        valid_data = TokenBackend(algorithm="HS256").decode(token, verify=False)
+        user_id = valid_data["user_id"]
+        survey_questions = validated_data.pop("survey_questions")
+        start_date = validated_data["start_date"]
+        end_date = validated_data["end_date"]
+        if start_date >= end_date:
+            message = DateBeforeValidator.message.format(
+                start_date_field="start_date",
+                end_date_field="end_date",
+            )
+            raise serializers.ValidationError({"end_date": message})
         survey = super().create(validated_data)
         user = import_string(settings.AUTH_USER_MODEL_MODULE).objects.get(id=user_id)
         for survey_question in survey_questions:
-            survey_question['survey'] = survey
-            survey_question['asked_by'] = user
+            survey_question["survey"] = survey
+            survey_question["asked_by"] = user
+            survey_question["is_editable"] = False
+            survey_question["is_deletable"] = False
         SurveyQuestionSerializer(many=True).create(survey_questions)
         return survey
 
     @transaction.atomic
     @remove_non_updatable(non_updatable_fields=Meta.non_updatable_fields)
     def update(self, instance, validated_data):
+        start_date = validated_data["start_date"]
+        end_date = validated_data["end_date"]
+        if start_date >= end_date:
+            message = DateBeforeValidator.message.format(
+                start_date_field="start_date",
+                end_date_field="end_date",
+            )
+            raise serializers.ValidationError({"end_date": message})
         updated_survey = super().update(instance, validated_data)
         return updated_survey
 
@@ -159,26 +259,32 @@ class SurveySerializer(serializers.ModelSerializer):
 class AnswerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Answer
-        fields = '__all__'
+        fields = "__all__"
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
         data["survey"] = NestedSurveySerializer(instance.survey, many=False).data
-        data['option'] = NestedQuestionOptionSerializer(instance.option, many=False).data
-        data['question'] = SimpleNestedQuestionSerializer(instance.question, many=False).data
-        data['answered_by'] = NestedParticipantSerializer(instance.answered_by, many=False).data
+        data["option"] = NestedQuestionOptionSerializer(
+            instance.option, many=False
+        ).data
+        data["question"] = SimpleNestedQuestionSerializer(
+            instance.question, many=False
+        ).data
+        data["answered_by"] = NestedParticipantSerializer(
+            instance.answered_by, many=False
+        ).data
         return data
 
 
 class NestedAnswerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Answer
-        fields = ['id', 'option', 'content']
+        fields = ["id", "option", "content"]
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
-        data['option'] = NestedQuestionSerializer(instance.option, many=False).data
-        data['question'] = NestedQuestionSerializer(instance.question, many=False).data
+        data["option"] = NestedQuestionSerializer(instance.option, many=False).data
+        data["question"] = NestedQuestionSerializer(instance.question, many=False).data
         return data
 
 
@@ -192,30 +298,40 @@ class TenantEmailAuthSerializer(EmailAuthSerializer):
     survey = serializers.IntegerField()
 
     def validate(self, attrs):
-        tenant = attrs.get('tenant')
+        tenant = attrs.get("tenant")
         if not tenant or not Tenant.objects.filter(id=tenant):
             raise serializers.ValidationError("Tenant is not found")
 
-        service = attrs.get('service')
+        service = attrs.get("service")
         if not service or not Service.objects.filter(id=service):
             raise serializers.ValidationError("Service is not found")
 
-        unit = attrs.get('unit')
+        unit = attrs.get("unit")
         if not unit or not Unit.objects.filter(id=unit):
             raise serializers.ValidationError("Unit is not found")
 
-        survey = attrs.get('survey')
+        survey = attrs.get("survey")
         if not survey or not Survey.objects.filter(id=survey):
             raise serializers.ValidationError("Survey is not found")
 
-        if not Configuration.objects.select_related().filter(
-                tenant=tenant, service=service, unit=unit, name='Redirect Link Patterns').exists():
+        if (
+            not Configuration.objects.select_related()
+            .filter(
+                tenant=tenant, service=service, unit=unit, name="Redirect Link Patterns"
+            )
+            .exists()
+        ):
             raise serializers.ValidationError("Redirect Link Patterns is not found")
 
-        config = Configuration.objects.select_related().filter(
-            tenant=tenant, service=service, unit=unit, name='Redirect Link Patterns').first()
+        config = (
+            Configuration.objects.select_related()
+            .filter(
+                tenant=tenant, service=service, unit=unit, name="Redirect Link Patterns"
+            )
+            .first()
+        )
         redirect_link_patterns = config.value
-        attrs['redirect_link_patterns'] = redirect_link_patterns
+        attrs["redirect_link_patterns"] = redirect_link_patterns
 
         alias = attrs.get(self.alias_type)
 
@@ -226,29 +342,44 @@ class TenantEmailAuthSerializer(EmailAuthSerializer):
             if api_settings.PASSWORDLESS_REGISTER_NEW_USERS is True:
                 # If new aliases should register new users.
                 try:
-                    user = User.objects.get(**{self.alias_type + '__iexact': alias})
+                    user = User.objects.get(**{self.alias_type + "__iexact": alias})
                 except User.DoesNotExist:
-                    user = User.objects.create(**{self.alias_type: alias}, username=alias)
+                    user = User.objects.create(
+                        **{self.alias_type: alias}, username=alias
+                    )
                     user.set_unusable_password()
                     user.save()
             else:
                 # If new aliases should not register new users.
                 try:
-                    user = User.objects.get(**{self.alias_type + '__iexact': alias})
+                    user = User.objects.get(**{self.alias_type + "__iexact": alias})
                 except User.DoesNotExist:
                     user = None
 
             if user:
                 if not user.is_active:
                     # If valid, return attrs so we can create a token in our logic controller
-                    msg = _('User account is disabled.')
+                    msg = _("User account is disabled.")
                     raise serializers.ValidationError(msg)
             else:
-                msg = _('No account is associated with this alias.')
+                msg = _("No account is associated with this alias.")
+                raise serializers.ValidationError(msg)
+
+            participant = ParticipantSurvey.objects.filter(
+                participant=user.id, survey=survey
+            )
+            if participant.exists() and not participant.first().is_active:
+                msg = _("Survey participant is disabled.")
                 raise serializers.ValidationError(msg)
         else:
-            msg = _('Missing %s.') % self.alias_type
+            msg = _("Missing %s.") % self.alias_type
             raise serializers.ValidationError(msg)
 
-        attrs['user'] = user
+        attrs["user"] = user
         return attrs
+
+
+class SurveySubmitSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SurveySubmit
+        fields = "__all__"

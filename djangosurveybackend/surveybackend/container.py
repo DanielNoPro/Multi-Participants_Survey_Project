@@ -1,5 +1,4 @@
 """Containers module."""
-from apscheduler.schedulers.background import BackgroundScheduler
 from dependency_injector import containers, providers
 from django.conf import settings
 
@@ -15,5 +14,5 @@ class Container(containers.DeclarativeContainer):
         port=settings.EMAIL_PORT,
         username=settings.EMAIL_HOST_USER,
         password=settings.EMAIL_HOST_PASSWORD,
-        use_tls=settings.EMAIL_USE_TLS
+        use_tls=settings.EMAIL_USE_TLS,
     )

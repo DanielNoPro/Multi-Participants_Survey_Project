@@ -1,19 +1,24 @@
 from abc import ABC
 
-from core.views.viewsets import WriteOnlyViewSet, ReadOnlyModelViewSet
 from rest_framework.authentication import BasicAuthentication
-from rest_framework.decorators import permission_classes, authentication_classes
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.decorators import authentication_classes, permission_classes
+from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from verification.authentication import ExpiringTokenAuthentication
 
-from tenant.models import Tenant, Service, Unit, Configuration
-from tenant.serializers import TenantSerializer, ServiceSerializer, UnitSerializer, ConfigurationSerializer
+from core.views.viewsets import ReadOnlyModelViewSet, WriteOnlyViewSet
+from tenant.models import Configuration, Service, Tenant, Unit
+from tenant.serializers import (
+    ConfigurationSerializer,
+    ServiceSerializer,
+    TenantSerializer,
+    UnitSerializer,
+)
 
 
 # Create your views here.
 class CoreTenantView(ABC):
-    lookup_field = 'id'
+    lookup_field = "id"
     queryset = Tenant.objects.all()
     serializer_class = TenantSerializer
 
@@ -25,13 +30,15 @@ class WriteOnlyTenantView(CoreTenantView, WriteOnlyViewSet):
 
 
 @permission_classes([IsAuthenticated])
-@authentication_classes([JWTAuthentication, ExpiringTokenAuthentication, BasicAuthentication])
+@authentication_classes(
+    [JWTAuthentication, ExpiringTokenAuthentication, BasicAuthentication]
+)
 class ReadOnlyTenantView(CoreTenantView, ReadOnlyModelViewSet):
     pass
 
 
 class CoreServiceView(ABC):
-    lookup_field = 'id'
+    lookup_field = "id"
     queryset = Service.objects.all()
     serializer_class = ServiceSerializer
 
@@ -43,13 +50,15 @@ class WriteOnlyServiceView(CoreServiceView, WriteOnlyViewSet):
 
 
 @permission_classes([IsAuthenticated])
-@authentication_classes([JWTAuthentication, ExpiringTokenAuthentication, BasicAuthentication])
+@authentication_classes(
+    [JWTAuthentication, ExpiringTokenAuthentication, BasicAuthentication]
+)
 class ReadOnlyServiceView(CoreServiceView, ReadOnlyModelViewSet):
     pass
 
 
 class CoreUnitView(ABC):
-    lookup_field = 'id'
+    lookup_field = "id"
     queryset = Unit.objects.all()
     serializer_class = UnitSerializer
 
@@ -61,13 +70,15 @@ class WriteOnlyUnitView(CoreUnitView, WriteOnlyViewSet):
 
 
 @permission_classes([IsAuthenticated])
-@authentication_classes([JWTAuthentication, ExpiringTokenAuthentication, BasicAuthentication])
+@authentication_classes(
+    [JWTAuthentication, ExpiringTokenAuthentication, BasicAuthentication]
+)
 class ReadOnlyUnitView(CoreUnitView, ReadOnlyModelViewSet):
     pass
 
 
 class CoreConfigurationView(ABC):
-    lookup_field = 'id'
+    lookup_field = "id"
     queryset = Configuration.objects.all()
     serializer_class = ConfigurationSerializer
 
@@ -79,6 +90,8 @@ class WriteOnlyConfigurationView(CoreConfigurationView, WriteOnlyViewSet):
 
 
 @permission_classes([IsAuthenticated])
-@authentication_classes([JWTAuthentication, ExpiringTokenAuthentication, BasicAuthentication])
+@authentication_classes(
+    [JWTAuthentication, ExpiringTokenAuthentication, BasicAuthentication]
+)
 class ReadOnlyConfigurationView(CoreConfigurationView, ReadOnlyModelViewSet):
     pass

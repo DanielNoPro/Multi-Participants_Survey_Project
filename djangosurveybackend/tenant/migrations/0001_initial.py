@@ -9,70 +9,132 @@ import tenant.models
 class Migration(migrations.Migration):
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Service',
+            name="Service",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100, unique=True)),
-                ('is_active', models.BooleanField(default=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=100, unique=True)),
+                ("is_active", models.BooleanField(default=True)),
             ],
             options={
-                'verbose_name': 'Service',
-                'verbose_name_plural': 'Service',
+                "verbose_name": "Service",
+                "verbose_name_plural": "Service",
             },
         ),
         migrations.CreateModel(
-            name='Tenant',
+            name="Tenant",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100)),
-                ('subdomain_prefix', models.CharField(max_length=100, unique=True)),
-                ('is_active', models.BooleanField(default=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=100)),
+                ("subdomain_prefix", models.CharField(max_length=100, unique=True)),
+                ("is_active", models.BooleanField(default=True)),
             ],
             options={
-                'verbose_name': 'Tenant',
-                'verbose_name_plural': 'Tenants',
+                "verbose_name": "Tenant",
+                "verbose_name_plural": "Tenants",
             },
         ),
         migrations.CreateModel(
-            name='Unit',
+            name="Unit",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100)),
-                ('is_active', models.BooleanField(default=True)),
-                ('parent', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE,
-                                             to='tenant.unit')),
-                ('tenant', models.ForeignKey(default=tenant.models.Tenant.get_default_pk,
-                                             on_delete=django.db.models.deletion.CASCADE, to='tenant.tenant')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=100)),
+                ("is_active", models.BooleanField(default=True)),
+                (
+                    "parent",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="tenant.unit",
+                    ),
+                ),
+                (
+                    "tenant",
+                    models.ForeignKey(
+                        default=tenant.models.Tenant.get_default_pk,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="tenant.tenant",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Unit',
-                'verbose_name_plural': 'Units',
-                'unique_together': {('name', 'tenant')},
+                "verbose_name": "Unit",
+                "verbose_name_plural": "Units",
+                "unique_together": {("name", "tenant")},
             },
         ),
         migrations.CreateModel(
-            name='Configuration',
+            name="Configuration",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100)),
-                ('value', models.CharField(max_length=255)),
-                ('is_active', models.BooleanField(default=True)),
-                ('service', models.ForeignKey(default=tenant.models.Service.get_default_pk,
-                                              on_delete=django.db.models.deletion.CASCADE, to='tenant.service')),
-                ('tenant', models.ForeignKey(default=tenant.models.Tenant.get_default_pk,
-                                             on_delete=django.db.models.deletion.CASCADE, to='tenant.tenant')),
-                ('unit', models.ForeignKey(default=tenant.models.Unit.get_default_pk,
-                                           on_delete=django.db.models.deletion.CASCADE, to='tenant.unit')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=100)),
+                ("value", models.CharField(max_length=255)),
+                ("is_active", models.BooleanField(default=True)),
+                (
+                    "service",
+                    models.ForeignKey(
+                        default=tenant.models.Service.get_default_pk,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="tenant.service",
+                    ),
+                ),
+                (
+                    "tenant",
+                    models.ForeignKey(
+                        default=tenant.models.Tenant.get_default_pk,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="tenant.tenant",
+                    ),
+                ),
+                (
+                    "unit",
+                    models.ForeignKey(
+                        default=tenant.models.Unit.get_default_pk,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="tenant.unit",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Config',
-                'verbose_name_plural': 'Configs',
-                'unique_together': {('name', 'service', 'tenant', 'unit')},
+                "verbose_name": "Config",
+                "verbose_name_plural": "Configs",
+                "unique_together": {("name", "service", "tenant", "unit")},
             },
         ),
     ]

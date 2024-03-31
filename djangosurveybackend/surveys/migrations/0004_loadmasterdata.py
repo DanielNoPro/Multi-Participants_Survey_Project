@@ -6,17 +6,18 @@ from django.db import migrations
 
 
 def load_fixture(apps, schema_editor):
-    fixture_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../fixtures'))
-    fixture_filename = 'master_data.json'
+    fixture_dir = os.path.abspath(
+        os.path.join(os.path.dirname(__file__), "../fixtures")
+    )
+    fixture_filename = "master_data.json"
     fixture_file = os.path.join(fixture_dir, fixture_filename)
-    call_command('loaddata', fixture_file)
+    call_command("loaddata", fixture_file)
 
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('surveys', '0003_auto_20231227_1224'),
+        ("surveys", "0003_auto_20231227_1224"),
     ]
-
     operations = [
         migrations.RunPython(load_fixture),
     ]

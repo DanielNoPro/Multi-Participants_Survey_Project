@@ -23,11 +23,15 @@ const questionSlice = createSlice({
         questions: [],
         loadingQuestion: false,
         questionTypes: [],
-        modalQuestion: false
+        modalQuestion: false,
+        current: 1,
     },
     reducers: {
         setModalQuestion(state, { payload }) {
             state.modalQuestion = payload;
+        },
+        setCurrentPage(state, { payload }) {
+            state.current = payload;
         },
     },
     extraReducers: (builder) => {
@@ -47,13 +51,14 @@ const questionSlice = createSlice({
             fetchGetQuestionTypes.fulfilled, (state, action) => {
                 state.questionTypes = action.payload.data
             }
-        )
+        );
     },
 });
 
 const { reducer, actions } = questionSlice;
 export const {
     setModalQuestion,
+    setCurrentPage
 } = actions;
 
 export default reducer;

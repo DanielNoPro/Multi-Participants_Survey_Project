@@ -3,9 +3,9 @@ from typing import List
 
 
 def remove_non_updatable(
-        non_updatable_fields: List[str],
-        kwargs_data_field='validated_data',
-        args_data_index=2
+    non_updatable_fields: List[str],
+    kwargs_data_field="validated_data",
+    args_data_index=2,
 ):
     def decorator(target_function):
         def wrapper(*args, **kwargs):
@@ -14,7 +14,9 @@ def remove_non_updatable(
             elif is_index_exist(args):
                 validated_data = args[args_data_index]
             else:
-                error = RuntimeError(f"'{kwargs_data_field}' argument and index '{args_data_index}' are not exist")
+                error = RuntimeError(
+                    f"'{kwargs_data_field}' argument and index '{args_data_index}' are not exist"
+                )
                 logging.error(error)
                 raise error
             for key in extract_non_updatable_keys(validated_data):
@@ -23,10 +25,7 @@ def remove_non_updatable(
 
         def extract_non_updatable_keys(validated_data) -> List[str]:
             return list(
-                filter(
-                    lambda k: k in non_updatable_fields,
-                    list(validated_data.keys())
-                )
+                filter(lambda k: k in non_updatable_fields, list(validated_data.keys()))
             )
 
         def is_index_exist(args):

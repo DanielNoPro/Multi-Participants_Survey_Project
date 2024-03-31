@@ -12,6 +12,7 @@ import {
 import { useRouter } from 'next/navigation';
 import { clearToken, getToken } from '@/utils/token';
 import { redirect } from 'next/navigation';
+import Image from 'next/image';
 
 function getItem(label, key, icon, children) {
     return {
@@ -49,7 +50,9 @@ export default function BaseLayout({ children }) {
             }}
         >
             <Sider style={{ background: 'white' }} width={250}>
-                <img src="/images/logo.png" alt="logo" style={{ padding: '20px' }} />
+                <Image src="/images/logo.png" alt="logo" style={{ padding: '20px' }} width={300}
+                    height={200}
+                    sizes="100vw" />
                 <Menu defaultSelectedKeys={['/dashboard/survey']} mode="inline" items={items} onClick={(e) => router.push(e.key)} />
 
                 <Button style={{ display: 'flex', margin: 'auto' }} onClick={logout}>Logout</Button>

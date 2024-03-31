@@ -5,11 +5,12 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('surveys', '0005_alter_answer_unique_together'),
+        ("surveys", "0005_alter_answer_unique_together"),
     ]
 
     operations = [
-        migrations.RunSQL("""
+        migrations.RunSQL(
+            """
 CREATE OR REPLACE FUNCTION public.get_survey_answer_statistics(
 	IN survey_id_input bigint, 
 	IN question_id_input bigint
@@ -33,5 +34,6 @@ begin
 		GROUP BY 
 			sa.content,
 			sqo.id;
-end;$BODY$;""")
+end;$BODY$;"""
+        )
     ]

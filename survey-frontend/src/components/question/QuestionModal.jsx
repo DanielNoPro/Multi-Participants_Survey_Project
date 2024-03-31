@@ -2,7 +2,7 @@
 import { Button, Input, Modal, DatePicker, Select, Radio, Space } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import React, { useEffect, useState } from 'react'
-import { fetchGetQuestions, setModalQuestion } from '@/redux/slices/questionSlice';
+import { fetchGetQuestions, setCurrentPage, setModalQuestion } from '@/redux/slices/questionSlice';
 import { questionService } from '@/services/questionService';
 import {
     PlusOutlined,
@@ -14,7 +14,7 @@ import {
 
 const QuestionModal = ({ data, setData, isUpdate, initialData, questionOptions, setQuestionOptions, resetOption }) => {
     const dispatch = useDispatch()
-    const { modalQuestion, questionTypes } = useSelector((state) => state.question)
+    const { modalQuestion, questionTypes, current } = useSelector((state) => state.question)
     const [extraOptions, setExtraOptions] = useState({})
 
     const handleChange = (e) => {
@@ -79,6 +79,7 @@ const QuestionModal = ({ data, setData, isUpdate, initialData, questionOptions, 
             }
         }
         dispatch(setModalQuestion(false))
+        dispatch(setCurrentPage(current))
         setData(initialData)
     };
 
@@ -88,6 +89,7 @@ const QuestionModal = ({ data, setData, isUpdate, initialData, questionOptions, 
         const res = await questionService.updateQuestion(data.id, formData)
         if (res) {
             dispatch(fetchGetQuestions({ page: 1, size: 10 }));
+            dispatch(setCurrentPage(current))
             dispatch(setModalQuestion(false))
         }
     }
@@ -336,7 +338,7 @@ const QuestionModal = ({ data, setData, isUpdate, initialData, questionOptions, 
         <Modal open={modalQuestion} closeIcon={null} destroyOnClose={true}
             footer={[
                 <Button key="back" onClick={handleCancel}>
-                    Cancel
+                    Close
                 </Button>,
                 <Button key="submit" type="primary" onClick={isUpdate ? handleUpdate : handleCreate}>
                     {isUpdate ? 'Update' : 'Create'}
@@ -355,19 +357,31 @@ const QuestionModal = ({ data, setData, isUpdate, initialData, questionOptions, 
             <div>
                 <Space direction="vertical" style={{ width: '100%', marginTop: '10px' }}>
                     <Input name="content" placeholder="Question Content" value={data.content} onChange={handleChange} />
-                    <Select
-                        placeholder="Question Type"
-                        style={{
-                            width: '100%',
-                        }}
-                        onChange={handleChangeSelect}
-                        options={questionTypes.map((item) => ({
-                            value: item.id,
-                            label: item.name
-                        }))}
-                        value={data.question_type}
-                        disabled={isUpdate}
-                    />
+                    {isUpdate
+                        ? <Select
+                            placeholder="Question Type"
+                            style={{
+                                width: '100%',
+                            }}
+                            onChange={handleChangeSelect}
+                            options={questionTypes.map((item) => ({
+                                value: item.id,
+                                label: item.name
+                            }))}
+                            value={data.question_type}
+                            disabled={isUpdate}
+                        />
+                        : <Select
+                            placeholder="Question Type"
+                            style={{
+                                width: '100%',
+                            }}
+                            onChange={handleChangeSelect}
+                            options={questionTypes.map((item) => ({
+                                value: item.id,
+                                label: item.name
+                            }))}
+                        />}
                     {renderQuestionOption(data.question_type)}
                 </Space>
             </div>

@@ -1,32 +1,39 @@
 version: '3.8'
 services:
-  #  web:
-  #    container_name: web
-  #    restart: always
-  #    build: .
-  #    command: python manage.py runserver 0.0.0.0:9000
-  #    depends_on:
-  #      - db
-  #    ports:
-  #      - "9001:9000"
-  #    env_file:
-  #      - ./.env.dev
+  web:
+    container_name: web
+    restart: always
+    image: ${WEBAPP_IMAGE}
+    command: python manage.py runserver 0.0.0.0:8000
+    depends_on:
+      - db
+    ports:
+      - "8001:8000"
+    env_file:
+      - ./.env.dev
+  frontend:
+    container_name: frontend
+    restart: always
+    image: liem18112000/survey-frontend:latest
+    ports:
+      - "80:3000"
+    environment:
+      - NEXT_PUBLIC_API_HOST=http://${DEPLOY_HOST_IP}:8001/
   cache:
+    container_name: cache
     image: redis:6.2-alpine
     restart: always
-    ports:
-      - '16379:6379'
     command: redis-server --save 20 1 --loglevel warning --requirepass eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
   db:
+    container_name: db
     image: postgres:14.1-alpine
     restart: always
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=survey
-    ports:
-      - '54321:5432'
   pgadmin:
+    container_name: pgadmin
     image: dpage/pgadmin4
     restart: always
     depends_on:
@@ -34,5 +41,5 @@ services:
     ports:
       - "5051:80"
     environment:
-      - PGADMIN_DEFAULT_EMAIL=admin@gmail.com
-      - PGADMIN_DEFAULT_PASSWORD=postgres
+      - PGADMIN_DEFAULT_EMAIL=nhanphamquangx196@gmail.com
+      - PGADMIN_DEFAULT_PASSWORD=xltfqysmrinwojpd

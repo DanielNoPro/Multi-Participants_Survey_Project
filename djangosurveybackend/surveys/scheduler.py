@@ -1,9 +1,8 @@
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime
 
 from apscheduler.jobstores.base import JobLookupError
 from apscheduler.schedulers.background import BackgroundScheduler
-from apscheduler.triggers.cron import CronTrigger
 from django.conf import settings
 from django.utils import timezone
 from django_apscheduler import util
@@ -32,8 +31,16 @@ def delete_old_job_executions(max_age=604_800):
     DjangoJobExecution.objects.delete_old_job_executions(max_age)
 
 
-def send_callback_token(token_service_class, mail_service, user: str, survey: str, redirect_link_patterns: str,
-                        alias_type: str, token_type: str, survey_end_time: datetime):
+def send_callback_token(
+    token_service_class,
+    mail_service,
+    user: str,
+    survey: str,
+    redirect_link_patterns: str,
+    alias_type: str,
+    token_type: str,
+    survey_end_time: datetime,
+):
     success: bool = token_service_class.send_token(
         user=user,
         alias_type=alias_type,
@@ -50,7 +57,9 @@ def send_callback_token(token_service_class, mail_service, user: str, survey: st
         send_survey_reminder(mail_service, user, survey, survey_end_time)
 
 
-def send_survey_reminder(mail_service, user: str, survey: str, survey_end_time: datetime):
+def send_survey_reminder(
+    mail_service, user: str, survey: str, survey_end_time: datetime
+):
     reminder_job_id = f"{user}_survey_{survey}_reminder"
     send_reminder_time = survey_end_time - settings.REMINDER_SURVEY_INTERVAL
 
@@ -72,8 +81,8 @@ def send_survey_reminder(mail_service, user: str, survey: str, survey_end_time: 
             "subject": settings.SURVEY_SUBJECT,
             "template": settings.SURVEY_TEMPLATE,
             "context": {},
-            "reply_to": None
-        }
+            "reply_to": None,
+        },
     )
     logger.info(f"Schedule sending survey reminder by '{str(send_reminder_time)}'")
 

@@ -8,21 +8,25 @@ from rest_framework.authtoken.models import Token
 
 from authenticate.manager import PasswordlessUserAccountManager
 
-TIMEDELTA = timezone.timedelta(seconds=float(api_settings.PASSWORDLESS_TOKEN_EXPIRE_TIME) * 10)
+TIMEDELTA = timezone.timedelta(
+    seconds=float(api_settings.PASSWORDLESS_TOKEN_EXPIRE_TIME) * 10
+)
 
 
 # Create your models here.
 class PasswordlessUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
     username = models.CharField(max_length=150, unique=True)
-    phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$', message="Please enter a valid phone number")
+    phone_regex = RegexValidator(
+        regex=r"^\+?1?\d{9,15}$", message="Please enter a valid phone number"
+    )
     phone_number = models.CharField(validators=[phone_regex], max_length=17, blank=True)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
 
     objects = PasswordlessUserAccountManager()
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username', 'phone_number']
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = ["username", "phone_number"]
 
     class Meta:
         verbose_name = "User"
@@ -40,7 +44,7 @@ class ExpiredToken(Token):
     expired = models.DateTimeField(default=get_expired_default_time)
 
     class Meta:
-        abstract = 'authenticate' not in settings.INSTALLED_APPS
+        abstract = "authenticate" not in settings.INSTALLED_APPS
         verbose_name = "Token"
         verbose_name_plural = "Tokens"
 
@@ -60,6 +64,6 @@ class ExpiredTokenProxy(ExpiredToken):
         return self.user_id
 
     class Meta:
-        proxy = 'authenticate' in settings.INSTALLED_APPS
-        abstract = 'authenticate' not in settings.INSTALLED_APPS
+        proxy = "authenticate" in settings.INSTALLED_APPS
+        abstract = "authenticate" not in settings.INSTALLED_APPS
         verbose_name = "Token"

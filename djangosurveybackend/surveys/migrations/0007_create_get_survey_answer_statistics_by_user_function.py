@@ -4,13 +4,13 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('surveys', '0006_create_get_survey_answer_statistics_function'),
+        ("surveys", "0006_create_get_survey_answer_statistics_function"),
     ]
 
     operations = [
-        migrations.RunSQL("""
+        migrations.RunSQL(
+            """
 CREATE OR REPLACE FUNCTION public.get_survey_answer_statistics_by_user(
 	IN survey_id_input bigint, 
 	IN question_id_input bigint
@@ -39,5 +39,6 @@ begin
 			sa.content,
 			sqo.id;
 end;$BODY$;
-        """)
+        """
+        )
     ]

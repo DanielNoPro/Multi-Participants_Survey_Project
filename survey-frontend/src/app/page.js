@@ -1,16 +1,16 @@
 'use client'
 import React from 'react';
-import Layout, { Content, Header } from 'antd/es/layout/layout';
+import Layout, { Content } from 'antd/es/layout/layout';
 import Sider from 'antd/es/layout/Sider';
-import { Button, Menu } from 'antd';
+import { Menu } from 'antd';
 import {
   DesktopOutlined,
   FileOutlined,
   PieChartOutlined,
   TeamOutlined,
-  UserOutlined,
 } from '@ant-design/icons';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 function getItem(label, key, icon, children) {
   return {
@@ -38,7 +38,9 @@ export default function BaseLayout({ children }) {
       }}
     >
       <Sider style={{ background: 'white' }}>
-        <img src="/images/logo.png" alt="logo" style={{ marginBottom: '20px' }} />
+        <Image src="/images/logo.png" alt="logo" style={{ marginBottom: '20px' }} width={300}
+                                height={200}
+                                sizes="100vw" />
         <Menu defaultSelectedKeys={['/survey']} mode="inline" items={items} onClick={(e)=>router.push(e.key)}/>
       </Sider>
       <Layout>

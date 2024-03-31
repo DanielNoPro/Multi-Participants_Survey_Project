@@ -8,6 +8,9 @@ import { fetchGetUserSurveyQuestions } from '@/redux/slices/surveySlice'
 import styles from './styles.module.css'
 import Likert from 'react-likert-scale';
 import { apiUser } from '@/constants/api';
+import Image from 'next/image';
+import { surveyService } from '@/services/surveyService';
+import { useRouter } from 'next/navigation';
 
 const Context = React.createContext({
     name: 'Default',
@@ -17,32 +20,36 @@ export default function Page({ params }) {
     const [start, setStart] = useState(false)
     const [data, setData] = useState([])
     const [isLate, setIsLate] = useState(false)
+    const [excludeSets, setExcludeSets] = useState([])
+    const [questions, setQuestions] = useState([])
+    const [currentSetId, setCurrentSetId] = useState("")
+    const [isSubmit, setIsSubmit] = useState(false)
     const { slug } = params
     const dispatch = useDispatch()
-    const { userSurvey, loadingSurvey } = useSelector((state) => state.survey)
+    const { userSurvey, loadingSurvey, surveyErrors } = useSelector((state) => state.survey)
+    const router = useRouter()
 
     const [api, contextHolder] = notification.useNotification();
 
-    const openNotificationWithIcon = (type) => {
-        api[type]({
-            message: `${userSurvey?.survey?.title}`,
-            description:
-                'Your responses has been saved.',
-        });
-    };
-
     function handleStartSurvey() {
-        setStart(true)
+        if(surveyErrors == "Participant is deactivated"){
+            router.push(`/surveys/revoke`)
+        } else {
+            setStart(true)
+        }
     }
 
     useEffect(() => {
         dispatch(fetchGetUserSurveyQuestions({ token: decodeURIComponent(slug[1]) }))
             .then(res => {
-                const newArray = res.payload?.survey?.questions.map((item) => {
-                    if (item.question_type.name == "Comment") {
-                        return { question: item.id, answer: { content: '' } };
+                setQuestions(res.payload?.survey?.question_sets[0].survey_question)
+                setExcludeSets([res.payload.survey.id])
+                setCurrentSetId(res.payload.survey?.question_sets[0].id)
+                const newArray = res.payload?.survey?.question_sets[0].survey_question.map((item, index) => {
+                    if (item.question.question_type.name == "Comment") {
+                        return { question: item.question.id, answer: { content: '' } };
                     } else {
-                        return { question: item.id, answer: { options: [] } };
+                        return { question: item.question.id, answer: { options: [] } };
                     }
                 });
                 setData(newArray);
@@ -86,8 +93,33 @@ export default function Page({ params }) {
                 Authorization: `Token ${userSurvey.token}`
             }
         }).then((res) => {
-            openNotificationWithIcon('success')
+            router.push(`/surveys/submission`)
         })
+    }
+
+    const handleNext = async () => {
+        let payload = {
+            data: {
+                exclude_sets: excludeSets,
+                items: data
+            }
+        }
+        try {
+            const res = await surveyService.getNextSet(slug[0], currentSetId, payload)
+            setCurrentSetId(res.id)
+            setExcludeSets([...excludeSets, res.id])
+            const newArray = res.survey_question?.map((item, index) => {
+                if (item.question.question_type.name == "Comment") {
+                    return { question: item.question.id, answer: { content: '' } };
+                } else {
+                    return { question: item.question.id, answer: { options: [] } };
+                }
+            });
+            setData(state => [...state, ...newArray])
+            setQuestions(state => [...state, ...res.survey_question])
+        } catch (error) {
+            setIsSubmit(true)
+        }
     }
 
     const renderOptions = (question, index) => {
@@ -148,7 +180,9 @@ export default function Page({ params }) {
                             padding: '50px 0'
                         }}
                     >
-                        <img src="/images/logo.png" alt="logo" style={{ padding: '20px' }} />
+                        <Image src="/images/logo.png" alt="logo" style={{ padding: '20px' }} width={300}
+                            height={200}
+                            sizes="100vw" />
                     </Header>
                     <Content
                         style={{
@@ -186,7 +220,9 @@ export default function Page({ params }) {
                                     padding: '50px 0'
                                 }}
                             >
-                                <img src="/images/logo.png" alt="logo" style={{ padding: '20px' }} />
+                                <Image src="/images/logo.png" alt="logo" style={{ padding: '20px' }} width={300}
+                                    height={200}
+                                    sizes="100vw" />
                             </Header>
                             <div className={styles.submit_section}>
                                 <Card
@@ -196,7 +232,10 @@ export default function Page({ params }) {
                                 >
                                     <p style={{ fontSize: '15px', fontWeight: '500', margin: '10px 0' }}>Start date: {moment(userSurvey?.survey?.start_date).format("YYYY/MM/DD ")}</p>
                                     <p style={{ fontSize: '15px', fontWeight: '500', marginBottom: '10px' }}>End date: {moment(userSurvey?.survey?.end_date).format("YYYY/MM/DD ")}</p>
-                                    <Button type='primary' onClick={handleSubmit}>Submit</Button>
+                                    {isSubmit
+                                        ? <Button type='primary' onClick={handleSubmit}>Submit</Button>
+                                        : <Button style={{ backgroundColor: "#92CF69", color: 'white' }} type='primary' onClick={handleNext}>Next</Button>
+                                    }
                                 </Card>
                             </div>
                             <Content
@@ -207,12 +246,12 @@ export default function Page({ params }) {
                             >
                                 <p style={{ color: '#5B9BD5', fontSize: '48px', textAlign: 'center' }}>{userSurvey?.survey?.title}</p>
                                 <div>
-                                    {userSurvey?.survey?.questions.map((item, index) => (
+                                    {questions?.map((item, index) => (
                                         <div className={styles.question} key={item.id}>
                                             <div className={styles.question_title}>
-                                                <span style={{ fontWeight: '600' }}>Question {index + 1}</span>:    {item.content}
+                                                <span style={{ fontWeight: '600' }}>Question {index + 1}</span>:    {item.question.content}
                                             </div>
-                                            {renderOptions(item, index)}
+                                            {renderOptions(item.question, index)}
                                         </div>
                                     ))
                                     }
@@ -232,7 +271,9 @@ export default function Page({ params }) {
                             padding: '50px 0'
                         }}
                     >
-                        <img src="/images/logo.png" alt="logo" style={{ padding: '20px' }} />
+                        <Image src="/images/logo.png" alt="logo" style={{ padding: '20px' }} width={300}
+                            height={200}
+                            sizes="100vw" />
                     </Header>
                     <Content
                         style={{

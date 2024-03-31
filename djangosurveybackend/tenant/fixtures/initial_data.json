@@ -77,8 +77,8 @@
     "model": "tenant.Configuration",
     "pk": 5,
     "fields": {
-      "name": "Database name",
-      "value": "survey",
+      "name": "Redirect Link Patterns",
+      "value": "http://128.199.140.5/surveys/{}/",
       "tenant": 1,
       "service": 1,
       "unit": 1,
@@ -87,10 +87,10 @@
   },
   {
     "model": "tenant.Configuration",
-    "pk": 5,
+    "pk": 6,
     "fields": {
-      "name": "Redirect Link Patterns",
-      "value": "http://localhost:3000/surveys/{}/",
+      "name": "Database name",
+      "value": "survey",
       "tenant": 1,
       "service": 1,
       "unit": 1,

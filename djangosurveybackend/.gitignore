@@ -138,3 +138,6 @@ GitHub.sublime-settings
 .history
 
 tools
+ssh
+postgres
+test-results

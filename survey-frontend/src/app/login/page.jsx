@@ -3,6 +3,7 @@ import React from 'react';
 import { Button, Checkbox, Col, Form, Input, Row } from 'antd';
 import { authService } from '@/services/authService';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 const LoginPage = () => {
     const router = useRouter()
@@ -78,7 +79,9 @@ const LoginPage = () => {
                                 fontSize: '15px',
                                 paddingLeft: '40px'
                             }}>Associate with</p>
-                            <img src="/images/logo.png" alt="logo" style={{ width: '70%' }} />
+                            <Image src="/images/logo.png" alt="logo" style={{ width: '70%' }} width={300}
+                                height={200}
+                                sizes="100vw" />
                         </div>
                     </Col>
                     <Col span={12} style={{
@@ -113,7 +116,7 @@ const LoginPage = () => {
                                         message: 'Please input your email!',
                                     },
                                 ]}
-                                style={{marginBottom: '50px'}}
+                                style={{ marginBottom: '50px' }}
                             >
                                 <Input placeholder="Email" size="large" />
                             </Form.Item>
@@ -127,7 +130,7 @@ const LoginPage = () => {
                                     },
                                 ]}
                             >
-                                <Input.Password placeholder="Password" size="large"/>
+                                <Input.Password placeholder="Password" size="large" />
                             </Form.Item>
 
                             <Form.Item
