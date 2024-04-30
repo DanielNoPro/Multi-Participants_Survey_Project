@@ -25,8 +25,8 @@ function getItem(label, key, icon, children) {
 const items = [
     getItem('Survey', '/dashboard/survey', <SnippetsOutlined />),
     getItem('Question', '/dashboard/question', <QuestionCircleOutlined />),
-    getItem('Group', '/dashboard/group', <TeamOutlined />),
-    getItem('Participant', '/dashboard/participant', <UserOutlined />),
+    // getItem('Group', '/dashboard/group', <TeamOutlined />),
+    // getItem('Participant', '/dashboard/participant', <UserOutlined />),
 ];
 
 export default function BaseLayout({ children }) {

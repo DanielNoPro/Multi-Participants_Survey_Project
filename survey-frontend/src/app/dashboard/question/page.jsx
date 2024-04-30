@@ -179,7 +179,7 @@ const Page = () => {
 
     return (
         <div>
-            <Button type="primary" className="mb-10" onClick={createQuestion}>Create Question</Button>
+            <Button type="primary" style={{ backgroundColor: "#5B9BD5" }} className="mb-10" onClick={createQuestion}>Create Question</Button>
             <QuestionModal
                 data={dataQuestion}
                 setData={setDataQuestion}
@@ -201,7 +201,8 @@ const Page = () => {
                     onChange: (page) => {
                         handleGetQuestions(page, 10)
                     },
-                    current: current
+                    current: current,
+                    showSizeChanger: false
                 }}
             />
         </div>

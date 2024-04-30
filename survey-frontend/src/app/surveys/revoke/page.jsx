@@ -36,7 +36,7 @@ export default function Page() {
                         }}
                     >
                         <div>
-                            <p style={{ color: '#1BB12A', fontSize: '18px', fontWeight: '500' }}>Your access to this survey has been revoke</p>
+                            <p style={{ color: '#1BB12A', fontSize: '18px', fontWeight: '500' }}>Your access to this survey has been revoked</p>
                             <Image src="/images/warning.png" alt="logo" style={{ padding: '20px', margin: "auto" }} width={200}
                                 height={200}
                                 sizes="100vw" />

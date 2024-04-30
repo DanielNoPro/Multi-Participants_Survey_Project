@@ -123,6 +123,7 @@ const SurveyModal = ({ data, setData, isUpdate }) => {
                                 value={dayjs(data.start_date, 'YYYY/MM/DD')}
                                 format='YYYY/MM/DD'
                                 onChange={handleChangeStart}
+                                allowClear={false}
                             />
                             <DatePicker
                                 style={{ width: '100%' }}
@@ -130,6 +131,7 @@ const SurveyModal = ({ data, setData, isUpdate }) => {
                                 value={dayjs(data.end_date, 'YYYY/MM/DD')}
                                 format='YYYY/MM/DD'
                                 onChange={handleChangeEnd}
+                                allowClear={false}
                             />
                         </>
                     ) : (
@@ -139,12 +141,14 @@ const SurveyModal = ({ data, setData, isUpdate }) => {
                                 placeholder="Start date"
                                 format='YYYY/MM/DD'
                                 onChange={handleChangeStart}
+                                allowClear={false}
                             />
                             <DatePicker
                                 style={{ width: '100%' }}
                                 placeholder="End date"
                                 format='YYYY/MM/DD'
                                 onChange={handleChangeEnd}
+                                allowClear={false}
                             />
                         </>
                     )}

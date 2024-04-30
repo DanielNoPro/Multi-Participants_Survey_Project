@@ -19,6 +19,7 @@ const TabSurveyQuestion = ({ slug }) => {
     const [isLogicOpen, setIsLogicOpen] = useState(false);
     const [current, setCurrent] = useState(1);
     const [currentSet, setCurrentSet] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
     const [currentSetContent, setCurrentSetContent] = useState([]);
     const [questionOptions, setQuestionOptions] = useState([]);
     const [messageApi, contextHolder] = message.useMessage();
@@ -169,9 +170,10 @@ const TabSurveyQuestion = ({ slug }) => {
     }
 
     const openAddQuestionModal = (set_id) => {
-        dispatch(fetchGetQuestions({ page: 1, size: 7 }))
+        dispatch(fetchGetQuestions({ page: 1, size: 6 }))
         setIsModalOpen(true)
         setCurrentSet(set_id)
+        setCurrentPage(1)
     }
 
     const addQuestionToSurvey = async (id) => {
@@ -321,6 +323,11 @@ const TabSurveyQuestion = ({ slug }) => {
         setCondition(state => ({ ...state, value: e.target.value }));
     }
 
+    const handlePaginateQuestionModal = (page) => {
+        dispatch(fetchGetQuestions({ page: page, size: 6 }))
+        setCurrentPage(page)
+    }
+
     useEffect(() => {
         handleGetSets(1)
     }, []);
@@ -379,8 +386,10 @@ const TabSurveyQuestion = ({ slug }) => {
                         pageSize: 6,
                         total: questions.total,
                         onChange: (page) => {
-                            dispatch(fetchGetQuestions({ page: page, size: 6 }))
+                            handlePaginateQuestionModal(page)
                         },
+                        showSizeChanger: false,
+                        current: currentPage
                     }}
                 />
             </Modal>

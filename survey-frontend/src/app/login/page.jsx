@@ -136,7 +136,7 @@ const LoginPage = () => {
                             <Form.Item
                                 style={{ textAlign: 'center' }}
                             >
-                                <Button type="primary" htmlType="submit">
+                                <Button style={{ backgroundColor: "#5B9BD5" }} type="primary" htmlType="submit">
                                     Log in
                                 </Button>
                             </Form.Item>

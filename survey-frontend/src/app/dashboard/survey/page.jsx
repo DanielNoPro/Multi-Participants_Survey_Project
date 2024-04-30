@@ -205,7 +205,7 @@ const SurveyPage = () => {
     return (
         <div>
             {/* <Search enterButton className="mb-20" /> */}
-            <Button type="primary" onClick={createSurvey} className="mb-10">Create Survey</Button>
+            <Button style={{ backgroundColor: "#5B9BD5" }} type="primary" onClick={createSurvey} className="mb-10">Create Survey</Button>
             <SurveyModal data={dataSurvey} setData={setDataSurvey} isUpdate={isUpdate} />
             <Table
                 loading={loadingSurvey}
